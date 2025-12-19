@@ -1,0 +1,3 @@
+[console_scripts]
+entity_tracker_fake_3d = nao_follow_bt.entity_tracker_fake_3d:main
+yolo_to_standard = nao_follow_bt.yolo_to_standard:main
