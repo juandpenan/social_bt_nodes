@@ -46,7 +46,7 @@ BT::NodeStatus SpeakEnumAction::onStart()
   }
   
   // Split the text into items
-  auto items = splitString(text, separator);
+  auto items = split_string(text, separator);
   
   if (items.empty()) {
     RCLCPP_ERROR(node_->get_logger(), "SpeakEnumAction: no items found in text");
@@ -54,7 +54,7 @@ BT::NodeStatus SpeakEnumAction::onStart()
   }
   
   // Build the enumerated text
-  enumerated_text_ = buildEnumeratedText(items, language);
+  enumerated_text_ = build_enumerated_text(items, language);
   
   RCLCPP_INFO(node_->get_logger(), 
     "SpeakEnumAction: Enumerated text: '%s'", enumerated_text_.c_str());
@@ -136,7 +136,7 @@ void SpeakEnumAction::onHalted()
   future_result_.reset();
 }
 
-std::string SpeakEnumAction::buildEnumeratedText(
+std::string SpeakEnumAction::build_enumerated_text(
   const std::vector<std::string> & items,
   const std::string & language)
 {
@@ -167,7 +167,7 @@ std::string SpeakEnumAction::buildEnumeratedText(
   return oss.str();
 }
 
-std::vector<std::string> SpeakEnumAction::splitString(
+std::vector<std::string> SpeakEnumAction::split_string(
   const std::string & text,
   const std::string & separator)
 {

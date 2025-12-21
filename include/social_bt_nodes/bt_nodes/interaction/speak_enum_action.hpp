@@ -61,11 +61,11 @@ public:
   }
 
 private:
-  std::string buildEnumeratedText(
+  std::string build_enumerated_text(
     const std::vector<std::string> & items, 
     const std::string & language);
   
-  std::vector<std::string> splitString(
+  std::vector<std::string> split_string(
     const std::string & text, 
     const std::string & separator);
   
