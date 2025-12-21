@@ -317,7 +317,24 @@ To use a different behavior tree:
 ```bash
 ros2 launch social_bt_nodes follow_behavior.launch.py bt_xml:=/path/to/custom_behavior.xml
 ```
+### Restaurant Order Demo (HRI Interaction Example)
 
+A complete demonstration of the interaction nodes (Speak, Listen, Extract, Confirmation) in a restaurant ordering scenario:
+
+```bash
+ros2 launch social_bt_nodes restaurant_demo.launch.py
+```
+
+This demo:
+- Launches all `simple_hri` services (TTS, STT, Extract, YesNo)
+- Runs a behavior tree that:
+  - Asks the customer if they're ready to order (in Spanish)
+  - Waits and retries if the customer says "no"
+  - Asks what they want to drink and eat when ready
+  - Extracts drink and meal from the response
+  - Confirms the order back to the customer
+
+**XML file:** `config/restaurant_order.xml`
 ## Obstacle Avoidance
 
 The motion control nodes support sensor-based obstacle avoidance:

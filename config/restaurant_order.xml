@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="RestaurantOrder">
+    <Sequence>
+      <RetryUntilSuccessful num_attempts="10">
+        <Sequence>
+          <Speak name="AskIfReady"
+                 text="¿Estás listo para ordenar?"
+                 service_name="/tts_service"
+                 timeout="5000"/>
+          <Listen name="ListenReady"
+                  transcribed_text="{ready_response}"
+                  service_name="/stt_service"
+                  timeout="10000"/>
+          <Confirmation name="CheckReady"
+                        text="{ready_response}"
+                        result="{ready_answer}"
+                        service_name="/yesno_service"
+                        timeout="5000"/>
+          <Switch2 case_1="YES"
+                   case_2="NO"
+                   variable="{ready_answer}">
+            <AlwaysSuccess/>
+            <Sequence>
+              <Speak name="SayWait"
+                     text="Está bien, esperaré un momento"
+                     service_name="/tts_service"
+                     timeout="5000"/>
+              <Delay delay_msec="3000">
+                <AlwaysFailure/>
+              </Delay>
+            </Sequence>
+            <AlwaysFailure/>
+          </Switch2>
+        </Sequence>
+      </RetryUntilSuccessful>
+      <Speak name="AskOrder"
+             text="Perfecto. ¿Qué deseas beber y comer?"
+             service_name="/tts_service"
+             timeout="5000"/>
+      <Listen name="ListenOrder"
+              transcribed_text="{order_text}"
+              service_name="/stt_service"
+              timeout="15000"/>
+      <Sequence>
+        <Extract name="ExtractDrink"
+                 interest="bebida"
+                 text="{order_text}"
+                 extracted_info="{drink}"
+                 service_name="/extract_service"
+                 timeout="10000"/>
+        <Extract name="ExtractMeal"
+                 interest="plato principal"
+                 text="{order_text}"
+                 extracted_info="{meal}"
+                 service_name="/extract_service"
+                 timeout="10000"/>
+      </Sequence>
+      <Speak name="ConfirmOrder"
+             text="Fantástico. Déjame confirmar tu orden"
+             service_name="/tts_service"
+             timeout="5000"/>
+      <Speak name="ConfirmOrder"
+             text="De comer quieres"
+             service_name="/tts_service"
+             timeout="5000"/>
+      <SpeakEnum name="SayOrder"
+                 text="{meal}"
+                 separator=";"
+                 language="es"
+                 service_name="/tts_service"
+                 timeout="5000"/>
+      <Speak name="ConfirmOrder"
+             text="Y de beber quieres"
+             service_name="/tts_service"
+             timeout="5000"/>
+      <SpeakEnum name="SayOrder"
+                 text="{drink}"
+                 separator=";"
+                 language="es"
+                 service_name="/tts_service"
+                 timeout="5000"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="Confirmation"
+            editable="true">
+      <input_port name="text"/>
+      <input_port name="result"/>
+      <input_port name="service_name"/>
+      <input_port name="timeout"/>
+    </Action>
+    <Action ID="Extract"
+            editable="true">
+      <input_port name="interest"/>
+      <input_port name="text"/>
+      <input_port name="extracted_info"/>
+      <input_port name="service_name"/>
+      <input_port name="timeout"/>
+    </Action>
+    <Action ID="Listen"
+            editable="true">
+      <input_port name="transcribed_text"/>
+      <input_port name="service_name"/>
+      <input_port name="timeout"/>
+    </Action>
+    <Action ID="Speak"
+            editable="true">
+      <input_port name="text"/>
+      <input_port name="service_name"/>
+      <input_port name="timeout"/>
+    </Action>
+    <Action ID="SpeakEnum"
+            editable="true">
+      <input_port name="text"/>
+      <input_port name="separator"/>
+      <input_port name="language"/>
+      <input_port name="service_name"/>
+      <input_port name="timeout"/>
+    </Action>
+  </TreeNodesModel>
+
+</root>

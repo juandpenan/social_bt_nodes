@@ -12,11 +12,14 @@ find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(vision_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(nao_lola_sensor_msgs REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(simple_hri_interfaces REQUIRED)
 
 set(dependencies
   rclcpp
@@ -24,11 +27,14 @@ set(dependencies
   geometry_msgs
   vision_msgs
   sensor_msgs
+  std_msgs
+  std_srvs
   tf2
   tf2_ros
   tf2_geometry_msgs
   nao_lola_sensor_msgs
   behaviortree_cpp
+  simple_hri_interfaces
 )
 
 include_directories(include)
@@ -39,6 +45,11 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/motion/spin_search_action.cpp
   src/bt_nodes/motion/nao_follow.cpp
   src/bt_nodes/motion/nao_follow_dynamic.cpp
+  src/bt_nodes/interaction/speak_action.cpp
+  src/bt_nodes/interaction/speak_enum_action.cpp
+  src/bt_nodes/interaction/listen_action.cpp
+  src/bt_nodes/interaction/extract_action.cpp
+  src/bt_nodes/interaction/confirmation_action.cpp
   src/bt_nodes/bt_plugins.cpp
 )
 

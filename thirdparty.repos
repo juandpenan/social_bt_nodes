@@ -2,3 +2,14 @@ repositories:
   thirdparty/yolo_ros:
     type: git
     url: https://github.com/mgonzs13/yolo_ros.git
+  thirdparty/simple_hri:
+    type: git
+    url: git@github.com:rodperex/simple_hri.git
+  thirdparty/audio_common:
+    type: git
+    url: https://github.com/mgonzs13/audio_common.git
+    version: main
+  thirdparty/sound_play:
+    type: git
+    url: git@github.com:rodperex/sound_play.git
+    version: ros2
