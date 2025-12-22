@@ -21,6 +21,7 @@ find_package(nao_lola_sensor_msgs REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
 find_package(simple_hri_interfaces REQUIRED)
 find_package(nav2_msgs REQUIRED)
+find_package(nao_pos_interfaces REQUIRED)
 
 set(dependencies
   rclcpp
@@ -37,6 +38,7 @@ set(dependencies
   behaviortree_cpp
   simple_hri_interfaces
   nav2_msgs
+  nao_pos_interfaces
 )
 
 include_directories(include)
@@ -53,6 +55,7 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/interaction/listen.cpp
   src/bt_nodes/interaction/extract.cpp
   src/bt_nodes/interaction/confirmation.cpp
+  src/bt_nodes/interaction/nao_position.cpp
   src/bt_nodes/bt_plugins.cpp
 )
 

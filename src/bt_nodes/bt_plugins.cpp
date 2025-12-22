@@ -9,6 +9,7 @@
 #include "social_bt_nodes/bt_nodes/interaction/listen.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/extract.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/confirmation.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/nao_position.hpp"
 
 // Plugin registration with extern "C" linkage for dynamic loading
 BT_REGISTER_NODES(factory)
@@ -23,4 +24,5 @@ BT_REGISTER_NODES(factory)
   factory.registerNodeType<social_bt_nodes::Listen>("Listen");
   factory.registerNodeType<social_bt_nodes::Extract>("Extract");
   factory.registerNodeType<social_bt_nodes::Confirmation>("Confirmation");
+  factory.registerNodeType<social_bt_nodes::NaoPosition>("NaoPosition");
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="NaoHelloExample">
+    <Sequence>
+      <NaoPosition action_name="hello" 
+                   action_server="/nao_pos_action" 
+                   timeout="10.0" 
+                   success="{hello_success}"/>
+    </Sequence>
+  </BehaviorTree>
+</root>

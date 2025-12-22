@@ -13,3 +13,7 @@ repositories:
     type: git
     url: git@github.com:rodperex/sound_play.git
     version: ros2
+  thirdparty/nao_pos:
+        type: git
+        url: https://github.com/geriabot/nao_pos.git
+        version: main
