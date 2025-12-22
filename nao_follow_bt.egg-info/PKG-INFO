@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: nao-follow-bt
-Version: 0.0.0
-Summary: VFF controller with attractive and repulsive vectors
-Maintainer: roi
-Maintainer-email: rodrigo.perez@urjc.es
-License: Apache 2.0
-License-File: LICENSE
