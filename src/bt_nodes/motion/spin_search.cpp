@@ -1,10 +1,10 @@
-#include "social_bt_nodes/bt_nodes/motion/spin_search_action.hpp"
+#include "social_bt_nodes/bt_nodes/motion/spin_search.hpp"
 #include <cmath>
 
 namespace social_bt_nodes
 {
 
-SpinSearchAction::SpinSearchAction(
+SpinSearch::SpinSearch(
   const std::string & action_name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(action_name, conf),
@@ -13,7 +13,7 @@ SpinSearchAction::SpinSearchAction(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("SpinSearchAction: 'node' not found in blackboard");
+    throw BT::RuntimeError("SpinSearch: 'node' not found in blackboard");
   }
   node_ = node_any;
   
@@ -30,15 +30,15 @@ SpinSearchAction::SpinSearchAction(
   
   touch_sub_ = node_->create_subscription<nao_lola_sensor_msgs::msg::Touch>(
     touch_topic, 10,
-    std::bind(&SpinSearchAction::touch_callback, this, std::placeholders::_1));
+    std::bind(&SpinSearch::touch_callback, this, std::placeholders::_1));
 }
 
-SpinSearchAction::~SpinSearchAction()
+SpinSearch::~SpinSearch()
 {
   stop_robot();
 }
 
-BT::NodeStatus SpinSearchAction::onStart()
+BT::NodeStatus SpinSearch::onStart()
 {
   if (!getInput("angular_speed", angular_speed_)) {
     angular_speed_ = 0.5;
@@ -51,7 +51,7 @@ BT::NodeStatus SpinSearchAction::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus SpinSearchAction::onRunning()
+BT::NodeStatus SpinSearch::onRunning()
 {
   // Check if stopped by touch sensor
   if (stop_requested_) {
@@ -76,13 +76,13 @@ BT::NodeStatus SpinSearchAction::onRunning()
   return BT::NodeStatus::RUNNING;
 }
 
-void SpinSearchAction::onHalted()
+void SpinSearch::onHalted()
 {
   RCLCPP_INFO(node_->get_logger(), "Search halted");
   stop_robot();
 }
 
-void SpinSearchAction::stop_robot()
+void SpinSearch::stop_robot()
 {
   auto twist_msg = geometry_msgs::msg::Twist();
   twist_msg.linear.x = 0.0;
@@ -95,7 +95,7 @@ void SpinSearchAction::stop_robot()
   cmd_vel_pub_->publish(twist_msg);
 }
 
-void SpinSearchAction::touch_callback(
+void SpinSearch::touch_callback(
   const nao_lola_sensor_msgs::msg::Touch::SharedPtr msg)
 {
   if (msg->head_front || msg->head_middle || msg->head_rear) {

@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_TARGET_DETECTED_CONDITION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_TARGET_DETECTED_CONDITION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_TARGET_DETECTED_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_TARGET_DETECTED_HPP_
 
 #include <memory>
 #include <string>
@@ -13,16 +13,16 @@
 namespace social_bt_nodes
 {
 
-class IsTargetDetectedCondition : public BT::ConditionNode
+class IsTargetDetected : public BT::ConditionNode
 {
 public:
-  IsTargetDetectedCondition(
+  IsTargetDetected(
     const std::string & condition_name,
     const BT::NodeConfig & conf);
 
-  IsTargetDetectedCondition() = delete;
+  IsTargetDetected() = delete;
 
-  ~IsTargetDetectedCondition();
+  ~IsTargetDetected();
 
   BT::NodeStatus tick() override;
 
@@ -43,4 +43,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_TARGET_DETECTED_CONDITION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_TARGET_DETECTED_HPP_

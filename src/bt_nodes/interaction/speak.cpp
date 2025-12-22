@@ -1,9 +1,9 @@
-#include "social_bt_nodes/bt_nodes/interaction/speak_action.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/speak.hpp"
 
 namespace social_bt_nodes
 {
 
-SpeakAction::SpeakAction(
+Speak::Speak(
   const std::string & name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(name, conf),
@@ -12,16 +12,16 @@ SpeakAction::SpeakAction(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("SpeakAction: 'node' not found in blackboard");
+    throw BT::RuntimeError("Speak: 'node' not found in blackboard");
   }
   node_ = node_any;
 }
 
-BT::NodeStatus SpeakAction::onStart()
+BT::NodeStatus Speak::onStart()
 {
   // Get input parameters
   if (!getInput("text", text_)) {
-    RCLCPP_ERROR(node_->get_logger(), "SpeakAction: missing required input 'text'");
+    RCLCPP_ERROR(node_->get_logger(), "Speak: missing required input 'text'");
     return BT::NodeStatus::FAILURE;
   }
   
@@ -41,7 +41,7 @@ BT::NodeStatus SpeakAction::onStart()
   // Wait for service to be available
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
-      "SpeakAction: Service '%s' not available yet", service_name_.c_str());
+      "Speak: Service '%s' not available yet", service_name_.c_str());
     return BT::NodeStatus::FAILURE;
   }
   
@@ -49,7 +49,7 @@ BT::NodeStatus SpeakAction::onStart()
   auto request = std::make_shared<simple_hri_interfaces::srv::Speech::Request>();
   request->text = text_;
   
-  RCLCPP_INFO(node_->get_logger(), "SpeakAction: Speaking '%s'", text_.c_str());
+  RCLCPP_INFO(node_->get_logger(), "Speak: Speaking '%s'", text_.c_str());
   
   future_result_ = std::make_shared<
     rclcpp::Client<simple_hri_interfaces::srv::Speech>::FutureAndRequestId>(
@@ -60,7 +60,7 @@ BT::NodeStatus SpeakAction::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus SpeakAction::onRunning()
+BT::NodeStatus Speak::onRunning()
 {
   // First, wait for service call to complete
   if (!waiting_for_speech_completion_) {
@@ -75,7 +75,7 @@ BT::NodeStatus SpeakAction::onRunning()
       
       if (!result->success) {
         RCLCPP_ERROR(node_->get_logger(), 
-          "SpeakAction: Speech failed: %s", result->debug.c_str());
+          "Speak: Speech failed: %s", result->debug.c_str());
         return BT::NodeStatus::FAILURE;
       }
       
@@ -93,7 +93,7 @@ BT::NodeStatus SpeakAction::onRunning()
       waiting_for_speech_completion_ = true;
       
       RCLCPP_INFO(node_->get_logger(), 
-        "SpeakAction: TTS service responded, waiting %d ms for speech completion", 
+        "Speak: TTS service responded, waiting %d ms for speech completion", 
         duration_ms);
     }
     
@@ -104,16 +104,16 @@ BT::NodeStatus SpeakAction::onRunning()
   auto elapsed = std::chrono::steady_clock::now() - speech_start_time_;
   
   if (elapsed >= speech_duration_) {
-    RCLCPP_INFO(node_->get_logger(), "SpeakAction: Speech completed");
+    RCLCPP_INFO(node_->get_logger(), "Speak: Speech completed");
     return BT::NodeStatus::SUCCESS;
   }
   
   return BT::NodeStatus::RUNNING;
 }
 
-void SpeakAction::onHalted()
+void Speak::onHalted()
 {
-  RCLCPP_WARN(node_->get_logger(), "SpeakAction: Halted");
+  RCLCPP_WARN(node_->get_logger(), "Speak: Halted");
   future_result_.reset();
 }
 

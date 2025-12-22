@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__EXTRACT_ACTION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__EXTRACT_ACTION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__EXTRACT_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__EXTRACT_HPP_
 
 #include <memory>
 #include <string>
@@ -29,16 +29,16 @@ namespace social_bt_nodes
  *   Output:
  *     - extracted_info (string): The extracted information
  */
-class ExtractAction : public BT::StatefulActionNode
+class Extract : public BT::StatefulActionNode
 {
 public:
-  ExtractAction(
+  Extract(
     const std::string & name,
     const BT::NodeConfig & conf);
 
-  ExtractAction() = delete;
+  Extract() = delete;
 
-  ~ExtractAction() = default;
+  ~Extract() = default;
 
   BT::NodeStatus onStart() override;
   BT::NodeStatus onRunning() override;
@@ -68,4 +68,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__EXTRACT_ACTION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__EXTRACT_HPP_

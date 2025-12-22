@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__MOTION__SPIN_SEARCH_ACTION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__MOTION__SPIN_SEARCH_ACTION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__MOTION__SPIN_SEARCH_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__MOTION__SPIN_SEARCH_HPP_
 
 #include <memory>
 #include <string>
@@ -12,16 +12,16 @@
 namespace social_bt_nodes
 {
 
-class SpinSearchAction : public BT::StatefulActionNode
+class SpinSearch : public BT::StatefulActionNode
 {
 public:
-  SpinSearchAction(
+  SpinSearch(
     const std::string & action_name,
     const BT::NodeConfig & conf);
 
-  SpinSearchAction() = delete;
+  SpinSearch() = delete;
 
-  ~SpinSearchAction();
+  ~SpinSearch();
 
   BT::NodeStatus onStart() override;
   BT::NodeStatus onRunning() override;
@@ -50,4 +50,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__MOTION__SPIN_SEARCH_ACTION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__MOTION__SPIN_SEARCH_HPP_

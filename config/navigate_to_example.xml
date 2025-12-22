@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+  <!-- 
+    Example BehaviorTree demonstrating the NavigateTo action node
+    
+    The NavigateTo node supports two modes:
+    1. Navigate to coordinates (x, y, yaw)
+    2. Navigate to a TF frame (target_frame)
+  -->
+  
+  <BehaviorTree ID="NavigateToCoordinates">
+    <Sequence>
+      <!-- Navigate to specific coordinates in map frame -->
+      <NavigateTo 
+        x="2.0" 
+        y="1.5" 
+        yaw="1.57" 
+        frame_id="map"
+        timeout="120.0"
+        error_msg="{nav_error}"/>
+      
+      <Speak text="I have reached the destination!" />
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="NavigateToFrame">
+    <Sequence>
+      <!-- Navigate to a TF frame (e.g., a detected object) -->
+      <NavigateTo 
+        target_frame="target"
+        frame_id="map"
+        timeout="120.0"
+        error_msg="{nav_error}"/>
+      
+      <Speak text="I have reached the target frame!" />
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="MultiWaypointNavigation">
+    <Sequence>
+      <!-- Navigate through multiple waypoints -->
+      <NavigateTo x="1.0" y="0.0" yaw="0.0" />
+      <Speak text="Reached waypoint 1" />
+      
+      <NavigateTo x="2.0" y="1.0" yaw="1.57" />
+      <Speak text="Reached waypoint 2" />
+      
+      <NavigateTo x="1.0" y="2.0" yaw="3.14" />
+      <Speak text="Reached waypoint 3" />
+      
+      <NavigateTo x="0.0" y="0.0" yaw="0.0" />
+      <Speak text="Returned to start!" />
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="NavigateWithFallback">
+    <Fallback>
+      <!-- Try to navigate to target frame, fallback to coordinates if it fails -->
+      <NavigateTo 
+        target_frame="goal_marker"
+        frame_id="map"
+        timeout="60.0"/>
+      
+      <Sequence>
+        <Speak text="Could not navigate to marker, going to backup coordinates" />
+        <NavigateTo x="1.0" y="1.0" yaw="0.0" />
+      </Sequence>
+    </Fallback>
+  </BehaviorTree>
+
+</root>

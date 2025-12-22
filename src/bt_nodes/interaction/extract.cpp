@@ -1,9 +1,9 @@
-#include "social_bt_nodes/bt_nodes/interaction/extract_action.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/extract.hpp"
 
 namespace social_bt_nodes
 {
 
-ExtractAction::ExtractAction(
+Extract::Extract(
   const std::string & name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(name, conf)
@@ -11,21 +11,21 @@ ExtractAction::ExtractAction(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("ExtractAction: 'node' not found in blackboard");
+    throw BT::RuntimeError("Extract: 'node' not found in blackboard");
   }
   node_ = node_any;
 }
 
-BT::NodeStatus ExtractAction::onStart()
+BT::NodeStatus Extract::onStart()
 {
   // Get input parameters
   if (!getInput("interest", interest_)) {
-    RCLCPP_ERROR(node_->get_logger(), "ExtractAction: missing required input 'interest'");
+    RCLCPP_ERROR(node_->get_logger(), "Extract: missing required input 'interest'");
     return BT::NodeStatus::FAILURE;
   }
   
   if (!getInput("text", text_)) {
-    RCLCPP_ERROR(node_->get_logger(), "ExtractAction: missing required input 'text'");
+    RCLCPP_ERROR(node_->get_logger(), "Extract: missing required input 'text'");
     return BT::NodeStatus::FAILURE;
   }
   
@@ -45,7 +45,7 @@ BT::NodeStatus ExtractAction::onStart()
   // Wait for service to be available
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
-      "ExtractAction: Service '%s' not available yet", service_name_.c_str());
+      "Extract: Service '%s' not available yet", service_name_.c_str());
     return BT::NodeStatus::FAILURE;
   }
   
@@ -55,7 +55,7 @@ BT::NodeStatus ExtractAction::onStart()
   request->text = text_;
   
   RCLCPP_INFO(node_->get_logger(), 
-    "ExtractAction: Extracting '%s' from text", interest_.c_str());
+    "Extract: Extracting '%s' from text", interest_.c_str());
   
   future_result_ = std::make_shared<
     rclcpp::Client<simple_hri_interfaces::srv::Extract>::FutureAndRequestId>(
@@ -64,7 +64,7 @@ BT::NodeStatus ExtractAction::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus ExtractAction::onRunning()
+BT::NodeStatus Extract::onRunning()
 {
   // Check if service call is complete
   if (!future_result_) {
@@ -79,7 +79,7 @@ BT::NodeStatus ExtractAction::onRunning()
     // The extracted information is in the result field
     std::string extracted_info = result->result;
     RCLCPP_INFO(node_->get_logger(), 
-      "ExtractAction: Extracted info: '%s'", extracted_info.c_str());
+      "Extract: Extracted info: '%s'", extracted_info.c_str());
     
     // Set output port with the extracted information
     setOutput("extracted_info", extracted_info);
@@ -90,9 +90,9 @@ BT::NodeStatus ExtractAction::onRunning()
   return BT::NodeStatus::RUNNING;
 }
 
-void ExtractAction::onHalted()
+void Extract::onHalted()
 {
-  RCLCPP_WARN(node_->get_logger(), "ExtractAction: Halted");
+  RCLCPP_WARN(node_->get_logger(), "Extract: Halted");
   future_result_.reset();
 }
 

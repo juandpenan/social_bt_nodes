@@ -1,9 +1,9 @@
-#include "social_bt_nodes/bt_nodes/interaction/confirmation_action.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/confirmation.hpp"
 
 namespace social_bt_nodes
 {
 
-ConfirmationAction::ConfirmationAction(
+Confirmation::Confirmation(
   const std::string & name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(name, conf)
@@ -11,16 +11,16 @@ ConfirmationAction::ConfirmationAction(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("ConfirmationAction: 'node' not found in blackboard");
+    throw BT::RuntimeError("Confirmation: 'node' not found in blackboard");
   }
   node_ = node_any;
 }
 
-BT::NodeStatus ConfirmationAction::onStart()
+BT::NodeStatus Confirmation::onStart()
 {
   // Get input parameters
   if (!getInput("text", text_)) {
-    RCLCPP_ERROR(node_->get_logger(), "ConfirmationAction: missing required input 'text'");
+    RCLCPP_ERROR(node_->get_logger(), "Confirmation: missing required input 'text'");
     return BT::NodeStatus::FAILURE;
   }
   
@@ -40,7 +40,7 @@ BT::NodeStatus ConfirmationAction::onStart()
   // Wait for service to be available
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
-      "ConfirmationAction: Service '%s' not available yet", service_name_.c_str());
+      "Confirmation: Service '%s' not available yet", service_name_.c_str());
     return BT::NodeStatus::FAILURE;
   }
   
@@ -49,7 +49,7 @@ BT::NodeStatus ConfirmationAction::onStart()
   request->text = text_;
   
   RCLCPP_INFO(node_->get_logger(), 
-    "ConfirmationAction: Checking for yes/no in text");
+    "Confirmation: Checking for yes/no in text");
   
   future_result_ = std::make_shared<
     rclcpp::Client<simple_hri_interfaces::srv::YesNo>::FutureAndRequestId>(
@@ -58,7 +58,7 @@ BT::NodeStatus ConfirmationAction::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus ConfirmationAction::onRunning()
+BT::NodeStatus Confirmation::onRunning()
 {
   // Check if service call is complete
   if (!future_result_) {
@@ -73,7 +73,7 @@ BT::NodeStatus ConfirmationAction::onRunning()
     // The yes/no result is in the result field
     std::string confirmation_result = result->result;
     RCLCPP_INFO(node_->get_logger(), 
-      "ConfirmationAction: Result: '%s'", confirmation_result.c_str());
+      "Confirmation: Result: '%s'", confirmation_result.c_str());
     
     // Set output port with the result
     setOutput("result", confirmation_result);
@@ -84,9 +84,9 @@ BT::NodeStatus ConfirmationAction::onRunning()
   return BT::NodeStatus::RUNNING;
 }
 
-void ConfirmationAction::onHalted()
+void Confirmation::onHalted()
 {
-  RCLCPP_WARN(node_->get_logger(), "ConfirmationAction: Halted");
+  RCLCPP_WARN(node_->get_logger(), "Confirmation: Halted");
   future_result_.reset();
 }
 

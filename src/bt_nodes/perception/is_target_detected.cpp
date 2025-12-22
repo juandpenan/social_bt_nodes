@@ -1,10 +1,10 @@
-#include "social_bt_nodes/bt_nodes/perception/is_target_detected_condition.hpp"
+#include "social_bt_nodes/bt_nodes/perception/is_target_detected.hpp"
 #include "tf2/exceptions.h"
 
 namespace social_bt_nodes
 {
 
-IsTargetDetectedCondition::IsTargetDetectedCondition(
+IsTargetDetected::IsTargetDetected(
   const std::string & condition_name,
   const BT::NodeConfig & conf)
 : BT::ConditionNode(condition_name, conf)
@@ -12,7 +12,7 @@ IsTargetDetectedCondition::IsTargetDetectedCondition(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("IsTargetDetectedCondition: 'node' not found in blackboard");
+    throw BT::RuntimeError("IsTargetDetected: 'node' not found in blackboard");
   }
   node_ = node_any;
   
@@ -20,17 +20,17 @@ IsTargetDetectedCondition::IsTargetDetectedCondition(
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 
-IsTargetDetectedCondition::~IsTargetDetectedCondition()
+IsTargetDetected::~IsTargetDetected()
 {
 }
 
-BT::NodeStatus IsTargetDetectedCondition::tick()
+BT::NodeStatus IsTargetDetected::tick()
 {
   std::string target_frame;
   std::string base_frame;
   double timeout;
 
-  RCLCPP_DEBUG(node_->get_logger(), "IsTargetDetectedCondition ticked");
+  RCLCPP_DEBUG(node_->get_logger(), "IsTargetDetected ticked");
 
   if (!getInput("target_frame", target_frame)) {
     RCLCPP_ERROR(node_->get_logger(), "Missing required input [target_frame]");

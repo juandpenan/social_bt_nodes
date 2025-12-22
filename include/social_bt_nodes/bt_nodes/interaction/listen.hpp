@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__LISTEN_ACTION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__LISTEN_ACTION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__LISTEN_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__LISTEN_HPP_
 
 #include <memory>
 #include <string>
@@ -26,16 +26,16 @@ namespace social_bt_nodes
  *   Output:
  *     - transcribed_text (string): The transcribed text from audio
  */
-class ListenAction : public BT::StatefulActionNode
+class Listen : public BT::StatefulActionNode
 {
 public:
-  ListenAction(
+  Listen(
     const std::string & name,
     const BT::NodeConfig & conf);
 
-  ListenAction() = delete;
+  Listen() = delete;
 
-  ~ListenAction() = default;
+  ~Listen() = default;
 
   BT::NodeStatus onStart() override;
   BT::NodeStatus onRunning() override;
@@ -61,4 +61,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__LISTEN_ACTION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__LISTEN_HPP_

@@ -1,11 +1,11 @@
-#include "social_bt_nodes/bt_nodes/interaction/speak_enum_action.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/speak_enum.hpp"
 #include <sstream>
 #include <algorithm>
 
 namespace social_bt_nodes
 {
 
-SpeakEnumAction::SpeakEnumAction(
+SpeakEnum::SpeakEnum(
   const std::string & name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(name, conf),
@@ -14,18 +14,18 @@ SpeakEnumAction::SpeakEnumAction(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("SpeakEnumAction: 'node' not found in blackboard");
+    throw BT::RuntimeError("SpeakEnum: 'node' not found in blackboard");
   }
   node_ = node_any;
 }
 
-BT::NodeStatus SpeakEnumAction::onStart()
+BT::NodeStatus SpeakEnum::onStart()
 {
   // Get input parameters
   std::string text, separator, language;
   
   if (!getInput("text", text)) {
-    RCLCPP_ERROR(node_->get_logger(), "SpeakEnumAction: missing required input 'text'");
+    RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: missing required input 'text'");
     return BT::NodeStatus::FAILURE;
   }
   
@@ -49,7 +49,7 @@ BT::NodeStatus SpeakEnumAction::onStart()
   auto items = split_string(text, separator);
   
   if (items.empty()) {
-    RCLCPP_ERROR(node_->get_logger(), "SpeakEnumAction: no items found in text");
+    RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: no items found in text");
     return BT::NodeStatus::FAILURE;
   }
   
@@ -57,7 +57,7 @@ BT::NodeStatus SpeakEnumAction::onStart()
   enumerated_text_ = build_enumerated_text(items, language);
   
   RCLCPP_INFO(node_->get_logger(), 
-    "SpeakEnumAction: Enumerated text: '%s'", enumerated_text_.c_str());
+    "SpeakEnum: Enumerated text: '%s'", enumerated_text_.c_str());
   
   // Create service client if not already created or if service name changed
   if (!client_ || client_->get_service_name() != service_name_) {
@@ -67,7 +67,7 @@ BT::NodeStatus SpeakEnumAction::onStart()
   // Wait for service to be available
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
-      "SpeakEnumAction: Service '%s' not available yet", service_name_.c_str());
+      "SpeakEnum: Service '%s' not available yet", service_name_.c_str());
     return BT::NodeStatus::FAILURE;
   }
   
@@ -84,7 +84,7 @@ BT::NodeStatus SpeakEnumAction::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus SpeakEnumAction::onRunning()
+BT::NodeStatus SpeakEnum::onRunning()
 {
   // First, wait for service call to complete
   if (!waiting_for_speech_completion_) {
@@ -99,7 +99,7 @@ BT::NodeStatus SpeakEnumAction::onRunning()
       
       if (!result->success) {
         RCLCPP_ERROR(node_->get_logger(), 
-          "SpeakEnumAction: Speech failed: %s", result->debug.c_str());
+          "SpeakEnum: Speech failed: %s", result->debug.c_str());
         return BT::NodeStatus::FAILURE;
       }
       
@@ -112,7 +112,7 @@ BT::NodeStatus SpeakEnumAction::onRunning()
       waiting_for_speech_completion_ = true;
       
       RCLCPP_INFO(node_->get_logger(), 
-        "SpeakEnumAction: TTS service responded, waiting %d ms for speech completion", 
+        "SpeakEnum: TTS service responded, waiting %d ms for speech completion", 
         duration_ms);
     }
     
@@ -123,20 +123,20 @@ BT::NodeStatus SpeakEnumAction::onRunning()
   auto elapsed = std::chrono::steady_clock::now() - speech_start_time_;
   
   if (elapsed >= speech_duration_) {
-    RCLCPP_INFO(node_->get_logger(), "SpeakEnumAction: Speech completed");
+    RCLCPP_INFO(node_->get_logger(), "SpeakEnum: Speech completed");
     return BT::NodeStatus::SUCCESS;
   }
   
   return BT::NodeStatus::RUNNING;
 }
 
-void SpeakEnumAction::onHalted()
+void SpeakEnum::onHalted()
 {
-  RCLCPP_WARN(node_->get_logger(), "SpeakEnumAction: Halted");
+  RCLCPP_WARN(node_->get_logger(), "SpeakEnum halted");
   future_result_.reset();
 }
 
-std::string SpeakEnumAction::build_enumerated_text(
+std::string SpeakEnum::build_enumerated_text(
   const std::vector<std::string> & items,
   const std::string & language)
 {
@@ -167,7 +167,7 @@ std::string SpeakEnumAction::build_enumerated_text(
   return oss.str();
 }
 
-std::vector<std::string> SpeakEnumAction::split_string(
+std::vector<std::string> SpeakEnum::split_string(
   const std::string & text,
   const std::string & separator)
 {
@@ -193,7 +193,7 @@ std::vector<std::string> SpeakEnumAction::split_string(
   return items;
 }
 
-std::string SpeakEnumAction::trim(const std::string & str)
+std::string SpeakEnum::trim(const std::string & str)
 {
   size_t first = str.find_first_not_of(" \t\n\r");
   if (first == std::string::npos) {

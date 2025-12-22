@@ -194,6 +194,46 @@ Advanced follow behavior with PID control and multi-level obstacle avoidance.
 - Two-level obstacle avoidance (avoidance + danger zones)
 - Better handling of dynamic obstacles
 
+#### 5. NavigateTo (Action)
+Autonomous navigation to goal poses using Nav2. Supports navigation to specific coordinates or TF frames.
+
+**XML Name:** `NavigateTo`
+
+**Ports:**
+- `x` (double, **required if not using target_frame**) - X coordinate in meters (map frame)
+- `y` (double, **required if not using target_frame**) - Y coordinate in meters (map frame)
+- `yaw` (double, default: `0.0`) - Yaw orientation in radians (map frame)
+- `target_frame` (string, **alternative to x,y,yaw**) - Target TF frame to navigate to
+- `frame_id` (string, default: `"map"`) - Frame ID for the goal pose
+- `action_name` (string, default: `"navigate_to_pose"`) - Nav2 action server name
+- `timeout` (double, default: `300.0`) - Timeout for navigation in seconds
+- `error_msg` (output string) - Error message if navigation fails
+
+**Returns:**
+- `RUNNING` while navigating
+- `SUCCESS` when goal is reached
+- `FAILURE` if navigation fails or times out
+
+**Features:**
+- Uses Nav2's NavigateToPose action for robust path planning and obstacle avoidance
+- Supports two modes: coordinate-based (x, y, yaw) or frame-based (target_frame)
+- Provides detailed feedback on navigation progress
+- Automatic goal cancellation on halt/timeout
+
+**Usage Examples:**
+```xml
+<!-- Navigate to coordinates -->
+<NavigateTo x="2.0" y="1.5" yaw="1.57" frame_id="map" timeout="120.0"/>
+
+<!-- Navigate to TF frame -->
+<NavigateTo target_frame="goal_marker" frame_id="map" timeout="120.0"/>
+```
+
+**Requirements:**
+- Nav2 navigation stack must be running
+- Map must be available (for map-based navigation)
+- NavigateToPose action server must be active
+
 ### Python Support Nodes
 
 #### 1. yolo_to_standard

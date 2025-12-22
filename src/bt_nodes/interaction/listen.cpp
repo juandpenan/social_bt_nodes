@@ -1,9 +1,9 @@
-#include "social_bt_nodes/bt_nodes/interaction/listen_action.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/listen.hpp"
 
 namespace social_bt_nodes
 {
 
-ListenAction::ListenAction(
+Listen::Listen(
   const std::string & name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(name, conf)
@@ -11,12 +11,12 @@ ListenAction::ListenAction(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("ListenAction: 'node' not found in blackboard");
+    throw BT::RuntimeError("Listen: 'node' not found in blackboard");
   }
   node_ = node_any;
 }
 
-BT::NodeStatus ListenAction::onStart()
+BT::NodeStatus Listen::onStart()
 {
   // Get input parameters
   if (!getInput("service_name", service_name_)) {
@@ -35,7 +35,7 @@ BT::NodeStatus ListenAction::onStart()
   // Wait for service to be available
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
-      "ListenAction: Service '%s' not available yet", service_name_.c_str());
+      "Listen: Service '%s' not available yet", service_name_.c_str());
     return BT::NodeStatus::FAILURE;
   }
   
@@ -43,7 +43,7 @@ BT::NodeStatus ListenAction::onStart()
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
   request->data = true;  // Start listening
   
-  RCLCPP_INFO(node_->get_logger(), "ListenAction: Starting to listen...");
+  RCLCPP_INFO(node_->get_logger(), "Listen: Starting to listen...");
   
   future_result_ = std::make_shared<
     rclcpp::Client<std_srvs::srv::SetBool>::FutureAndRequestId>(
@@ -52,7 +52,7 @@ BT::NodeStatus ListenAction::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus ListenAction::onRunning()
+BT::NodeStatus Listen::onRunning()
 {
   // Check if service call is complete
   if (!future_result_) {
@@ -68,7 +68,7 @@ BT::NodeStatus ListenAction::onRunning()
       // The transcribed text is in the message field
       std::string transcribed_text = result->message;
       RCLCPP_INFO(node_->get_logger(), 
-        "ListenAction: Transcribed text: '%s'", transcribed_text.c_str());
+        "Listen: Transcribed text: '%s'", transcribed_text.c_str());
       
       // Set output port with the transcribed text
       setOutput("transcribed_text", transcribed_text);
@@ -76,7 +76,7 @@ BT::NodeStatus ListenAction::onRunning()
       return BT::NodeStatus::SUCCESS;
     } else {
       RCLCPP_ERROR(node_->get_logger(), 
-        "ListenAction: Failed to transcribe: %s", result->message.c_str());
+        "Listen: Failed to transcribe: %s", result->message.c_str());
       return BT::NodeStatus::FAILURE;
     }
   }
@@ -84,9 +84,9 @@ BT::NodeStatus ListenAction::onRunning()
   return BT::NodeStatus::RUNNING;
 }
 
-void ListenAction::onHalted()
+void Listen::onHalted()
 {
-  RCLCPP_WARN(node_->get_logger(), "ListenAction: Halted");
+  RCLCPP_WARN(node_->get_logger(), "Listen: Halted");
   future_result_.reset();
 }
 

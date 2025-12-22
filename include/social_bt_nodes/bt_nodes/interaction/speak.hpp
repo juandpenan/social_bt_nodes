@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__SPEAK_ACTION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__SPEAK_ACTION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__SPEAK_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__SPEAK_HPP_
 
 #include <memory>
 #include <string>
@@ -25,16 +25,16 @@ namespace social_bt_nodes
  *     - service_name (string, default: "/tts_service"): TTS service name
  *     - timeout (int, default: 5000): Service call timeout in ms
  */
-class SpeakAction : public BT::StatefulActionNode
+class Speak : public BT::StatefulActionNode
 {
 public:
-  SpeakAction(
+  Speak(
     const std::string & name,
     const BT::NodeConfig & conf);
 
-  SpeakAction() = delete;
+  Speak() = delete;
 
-  ~SpeakAction() = default;
+  ~Speak() = default;
 
   BT::NodeStatus onStart() override;
   BT::NodeStatus onRunning() override;
@@ -66,4 +66,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__SPEAK_ACTION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__SPEAK_HPP_

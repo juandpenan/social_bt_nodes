@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_ACTION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_ACTION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_HPP_
 
 #include <memory>
 #include <string>
@@ -28,16 +28,16 @@ namespace social_bt_nodes
  *   Output:
  *     - result (string): "YES" or "NO" response
  */
-class ConfirmationAction : public BT::StatefulActionNode
+class Confirmation : public BT::StatefulActionNode
 {
 public:
-  ConfirmationAction(
+  Confirmation(
     const std::string & name,
     const BT::NodeConfig & conf);
 
-  ConfirmationAction() = delete;
+  Confirmation() = delete;
 
-  ~ConfirmationAction() = default;
+  ~Confirmation() = default;
 
   BT::NodeStatus onStart() override;
   BT::NodeStatus onRunning() override;
@@ -65,4 +65,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_ACTION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_HPP_
