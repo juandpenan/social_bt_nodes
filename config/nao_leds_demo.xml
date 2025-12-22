@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="NaoLedsDemo">
+    <Sequence>
+      <!-- Turn on feet LEDs in blue -->
+      <NaoSetLeds led_ids="4,5" 
+                  mode="0" 
+                  color_r="0.0" 
+                  color_g="0.0" 
+                  color_b="1.0" 
+                  intensity="1.0"
+                  action_server="leds_play"
+                  timeout="5.0" 
+                  success="{feet_blue_success}"/>
+      
+      <!-- Wait a moment -->
+      <Delay delay_msec="2000">
+        <AlwaysSuccess/>
+      </Delay>
+      
+      <!-- Blink chest LED in green for 3 seconds -->
+      <NaoSetLeds led_ids="3" 
+                  mode="1" 
+                  color_r="0.0" 
+                  color_g="1.0" 
+                  color_b="0.0" 
+                  frequency="3.0"
+                  duration="3.0"
+                  action_server="leds_play"
+                  timeout="5.0" 
+                  success="{chest_blink_success}"/>
+      
+      <!-- Wait a moment -->
+      <Delay delay_msec="1000">
+        <AlwaysSuccess/>
+      </Delay>
+      
+      <!-- Eyes loop animation in red -->
+      <NaoSetLeds led_ids="6,7" 
+                  mode="2" 
+                  color_r="1.0" 
+                  color_g="0.0" 
+                  color_b="0.0" 
+                  frequency="5.0"
+                  duration="5.0"
+                  action_server="leds_play"
+                  timeout="8.0" 
+                  success="{eyes_loop_success}"/>
+      
+      <!-- Wait a moment -->
+      <Delay delay_msec="1000">
+        <AlwaysSuccess/>
+      </Delay>
+      
+      <!-- Turn off all LEDs -->
+      <NaoSetLeds led_ids="4,5" 
+                  mode="0" 
+                  color_r="0.0" 
+                  color_g="0.0" 
+                  color_b="0.0" 
+                  intensity="0.0"
+                  action_server="leds_play"
+                  timeout="5.0" 
+                  success="{feet_off_success}"/>
+    </Sequence>
+  </BehaviorTree>
+</root>

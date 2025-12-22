@@ -38,6 +38,9 @@ class EntityTracker(Node):
         self.optical_frame = self.get_parameter('optical_frame').value
         self.get_logger().info(f'Tracking target class: {self.target_class}')
         
+        # Add parameter callback to allow runtime changes
+        self.add_on_set_parameters_callback(self.parameter_callback)
+        
         self.configured = False
 
         # self.tf_buffer = Buffer()
@@ -58,6 +61,17 @@ class EntityTracker(Node):
             self.camera_info_callback,
             rclpy.qos.qos_profile_sensor_data
         )
+
+    def parameter_callback(self, params):
+        """Callback for parameter changes at runtime."""
+        from rcl_interfaces.msg import SetParametersResult
+        
+        for param in params:
+            if param.name == 'target_class':
+                self.target_class = param.value
+                self.get_logger().info(f'Target class changed to: {self.target_class}')
+        
+        return SetParametersResult(successful=True)
 
     def camera_info_callback(self, msg: CameraInfo):
         # The intrinsic matrix K is a 9-element array (row-major order)

@@ -20,8 +20,10 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(nao_lola_sensor_msgs REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
 find_package(simple_hri_interfaces REQUIRED)
+find_package(simple_perception_interfaces REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(nao_pos_interfaces REQUIRED)
+find_package(nao_led_interfaces REQUIRED)
 
 set(dependencies
   rclcpp
@@ -37,8 +39,10 @@ set(dependencies
   nao_lola_sensor_msgs
   behaviortree_cpp
   simple_hri_interfaces
+  simple_perception_interfaces
   nav2_msgs
   nao_pos_interfaces
+  nao_led_interfaces
 )
 
 include_directories(include)
@@ -46,6 +50,7 @@ include_directories(include)
 # BT Nodes plugin library
 add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/perception/is_target_detected.cpp
+  src/bt_nodes/perception/set_perception_target.cpp
   src/bt_nodes/motion/spin_search.cpp
   src/bt_nodes/motion/nao_follow.cpp
   src/bt_nodes/motion/nao_follow_dynamic.cpp
@@ -56,6 +61,8 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/interaction/extract.cpp
   src/bt_nodes/interaction/confirmation.cpp
   src/bt_nodes/interaction/nao_position.cpp
+  src/bt_nodes/interaction/nao_set_leds.cpp
+  src/bt_nodes/support/set_ros2_param.cpp
   src/bt_nodes/bt_plugins.cpp
 )
 

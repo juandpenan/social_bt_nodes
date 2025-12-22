@@ -20,7 +20,7 @@ def generate_launch_description():
             name='entity_tracker_node',
             output='screen',
             parameters=[{
-                'target_class': 'tv',
+                'target_class': 'person',
                 'source_frame': 'base_link',
                 'target_frame': 'target',
                 'optical_frame': 'CameraTop_optical_frame'

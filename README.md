@@ -126,7 +126,33 @@ Checks if the target TF frame is available.
 - `SUCCESS` if target TF is available
 - `FAILURE` if target TF is not available
 
-#### 2. SpinSearch (Action)
+#### 2. SetPerceptionTarget (Action)
+Calls the perception system service to dynamically change the target class being tracked.
+
+**XML Name:** `SetPerceptionTarget`
+
+**Ports:**
+- `service_name` (string, default: `"/set_perception_target"`) - Service name
+- `target_class` (string, **required**) - Target class to track (e.g., "person", "tv", "bottle")
+- `timeout` (int, default: `2000`) - Service call timeout (ms)
+- `success` (bool, output) - Whether the service call succeeded
+- `message` (string, output) - Response message from service
+
+**Returns:**
+- `SUCCESS` if service call succeeded
+- `FAILURE` if service call failed or timed out
+- `RUNNING` while waiting for service response
+
+**Example:**
+```xml
+<SetPerceptionTarget 
+  name="SetTargetToTV"
+  service_name="/set_perception_target"
+  target_class="tv"
+  timeout="5000"/>
+```
+
+#### 3. SpinSearch (Action)
 Rotates the robot in place while searching for the target. Always returns RUNNING (continuous spinning).
 
 **XML Name:** `SpinSearch`
@@ -141,7 +167,7 @@ Rotates the robot in place while searching for the target. Always returns RUNNIN
 
 **Note:** Can be stopped via touch sensor input (implementation depends on robot platform).
 
-#### 3. Follow (Action)
+#### 4. Follow (Action)
 Follows the target TF frame with integrated obstacle avoidance using sonar sensors.
 
 **XML Name:** `Follow`
@@ -165,7 +191,7 @@ Follows the target TF frame with integrated obstacle avoidance using sonar senso
 - `SUCCESS` if `succeed_on_reach` is true and target reached
 - `FAILURE` if target is lost
 
-#### 4. FollowDynamic (Action)
+#### 5. FollowDynamic (Action)
 Advanced follow behavior with PID control and multi-level obstacle avoidance.
 
 **XML Name:** `FollowDynamic`
@@ -194,7 +220,7 @@ Advanced follow behavior with PID control and multi-level obstacle avoidance.
 - Two-level obstacle avoidance (avoidance + danger zones)
 - Better handling of dynamic obstacles
 
-#### 5. NavigateTo (Action)
+#### 6. NavigateTo (Action)
 Autonomous navigation to goal poses using Nav2. Supports navigation to specific coordinates or TF frames.
 
 **XML Name:** `NavigateTo`

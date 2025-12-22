@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+  
+  <!-- 
+    Behavior Tree: Change Target and Follow
+    
+    Strategy: 
+    - Set tracker to detect 'tv' and follow for 5 seconds
+    - Switch tracker to detect 'person' and follow for 5 seconds
+  -->
+  
+  <BehaviorTree ID="FollowChangeExample">
+    
+    <Sequence name="MainSequence">
+      
+      <!-- Phase 1: Set target to 'tv' -->
+      <SetRos2Param 
+        name="SetTargetToTV"
+        node_name="entity_tracker_node"
+        param_name="target_class"
+        param_value="tv"
+        param_type="string"/>
+      
+      <!-- Follow TV for N seconds with spin search fallback -->
+      <ForceSuccess>
+        <Timeout msec="30000">
+          <ReactiveFallback name="FollowOrSearchTV">
+            
+            <!-- Branch 1: If TV detected, follow it -->
+            <ReactiveSequence name="FollowTV">
+              <IsTargetDetected 
+                name="CheckTVTarget"
+                target_frame="target"
+                base_frame="base_link"
+                timeout="3.0"/>
+              
+              <Follow 
+                name="FollowTVTarget"
+                target_frame="target"
+                base_frame="base_link"
+                min_distance="0.5"
+                avoidance_distance="0.2"
+                max_linear_speed="1.0"
+                max_angular_speed="0.5"
+                succeed_on_reach="false"
+                cmd_vel_topic="/target"
+                sonar_topic="/sensors/sonar"
+                touch_topic="/sensors/touch"/>
+            </ReactiveSequence>
+            
+            <!-- Branch 2: If TV not detected, spin to search -->
+            <SpinSearch 
+              name="SearchForTV"
+              angular_speed="1.0"
+              cmd_vel_topic="/target"/>
+            
+          </ReactiveFallback>
+        </Timeout>
+      </ForceSuccess>
+      
+      <!-- Phase 2: Set target to 'person' -->
+      <SetRos2Param 
+        name="SetTargetToPerson"
+        node_name="entity_tracker_node"
+        param_name="target_class"
+        param_value="person"
+        param_type="string"/>
+      
+      <!-- Follow person for N seconds with spin search fallback -->
+      <ForceSuccess>
+        <Timeout msec="60000">
+          <ReactiveFallback name="FollowOrSearchPerson">
+            
+            <!-- Branch 1: If person detected, follow it -->
+            <ReactiveSequence name="FollowPerson">
+              <IsTargetDetected 
+                name="CheckPersonTarget"
+                target_frame="target"
+                base_frame="base_link"
+                timeout="3.0"/>
+              
+              <Follow 
+                name="FollowPersonTarget"
+                target_frame="target"
+                base_frame="base_link"
+                min_distance="0.5"
+                avoidance_distance="0.2"
+                max_linear_speed="1.0"
+                max_angular_speed="0.5"
+                succeed_on_reach="false"
+                cmd_vel_topic="/target"
+                sonar_topic="/sensors/sonar"
+                touch_topic="/sensors/touch"/>
+            </ReactiveSequence>
+            
+            <!-- Branch 2: If person not detected, spin to search -->
+            <SpinSearch 
+              name="SearchForPerson"
+              angular_speed="1.0"
+              cmd_vel_topic="/target"/>
+            
+          </ReactiveFallback>
+        </Timeout>
+      </ForceSuccess>
+      
+    </Sequence>
+    
+  </BehaviorTree>
+  
+</root>

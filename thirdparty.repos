@@ -5,6 +5,9 @@ repositories:
   thirdparty/simple_hri:
     type: git
     url: git@github.com:rodperex/simple_hri.git
+  thirdparty/simple_perception:
+    type: git
+    url: git@github.com:rodperex/simple_perception.git
   thirdparty/audio_common:
     type: git
     url: https://github.com/mgonzs13/audio_common.git
@@ -16,4 +19,8 @@ repositories:
   thirdparty/nao_pos:
         type: git
         url: https://github.com/geriabot/nao_pos.git
+        version: main
+  thirdparty/nao_led:
+        type: git
+        url: https://github.com/rodperex/nao_led.git
         version: main

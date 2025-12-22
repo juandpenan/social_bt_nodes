@@ -1,0 +1,33 @@
+<!-- Example usage of NaoSetLeds BT node -->
+
+<!-- Turn on both feet LEDs in red with steady mode -->
+<NaoSetLeds led_ids="4,5" mode="0" color_r="1.0" color_g="0.0" color_b="0.0" 
+            intensity="1.0" timeout="5.0"/>
+
+<!-- Blink chest LED in green at 2Hz for 5 seconds -->
+<NaoSetLeds led_ids="3" mode="1" color_r="0.0" color_g="1.0" color_b="0.0" 
+            frequency="2.0" duration="5.0" timeout="10.0"/>
+
+<!-- Eyes loop animation in blue -->
+<NaoSetLeds led_ids="6,7" mode="2" color_r="0.0" color_g="0.0" color_b="1.0" 
+            frequency="5.0" duration="10.0" timeout="15.0"/>
+
+<!-- Turn off feet LEDs (black color) -->
+<NaoSetLeds led_ids="4,5" mode="0" color_r="0.0" color_g="0.0" color_b="0.0" 
+            intensity="0.0" timeout="5.0"/>
+
+<!-- LED IDs Reference:
+     0: HEAD
+     1: LEAR (Left Ear)
+     2: REAR (Right Ear)
+     3: CHEST
+     4: LFOOT (Left Foot)
+     5: RFOOT (Right Foot)
+     6: LEYE (Left Eye)
+     7: REYE (Right Eye)
+     
+     Modes:
+     0: STEADY (constant on)
+     1: BLINKING (blink on/off)
+     2: LOOP (rotating animation)
+-->
