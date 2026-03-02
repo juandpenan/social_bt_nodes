@@ -75,10 +75,15 @@ BT::NodeStatus Confirmation::onRunning()
     RCLCPP_INFO(node_->get_logger(), 
       "Confirmation: Result: '%s'", confirmation_result.c_str());
     
-    // Set output port with the result
-    setOutput("result", confirmation_result);
     
-    return BT::NodeStatus::SUCCESS;
+    // Return SUCCESS only if confirmed (YES), FAILURE otherwise
+    if (confirmation_result == "YES") {
+      return BT::NodeStatus::SUCCESS;
+    } else {
+      RCLCPP_INFO(node_->get_logger(), 
+        "Confirmation: User did not confirm (result: '%s')", confirmation_result.c_str());
+      return BT::NodeStatus::FAILURE;
+    }
   }
   
   return BT::NodeStatus::RUNNING;

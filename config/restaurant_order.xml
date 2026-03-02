@@ -3,36 +3,32 @@
   <BehaviorTree ID="RestaurantOrder">
     <Sequence>
       <RetryUntilSuccessful num_attempts="10">
-        <Sequence>
-          <Speak name="AskIfReady"
-                 text="¿Estás listo para ordenar?"
-                 service_name="/tts_service"
-                 timeout="5000"/>
-          <Listen name="ListenReady"
-                  transcribed_text="{ready_response}"
-                  service_name="/stt_service"
-                  timeout="10000"/>
-          <Confirmation name="CheckReady"
-                        text="{ready_response}"
-                        result="{ready_answer}"
-                        service_name="/yesno_service"
-                        timeout="5000"/>
-          <Switch2 case_1="YES"
-                   case_2="NO"
-                   variable="{ready_answer}">
-            <AlwaysSuccess/>
-            <Sequence>
-              <Speak name="SayWait"
-                     text="Está bien, esperaré un momento"
-                     service_name="/tts_service"
-                     timeout="5000"/>
-              <Delay delay_msec="3000">
-                <AlwaysFailure/>
-              </Delay>
-            </Sequence>
-            <AlwaysFailure/>
-          </Switch2>
-        </Sequence>
+        <Fallback>
+          <Sequence>
+            <Speak name="AskIfReady"
+                   text="¿Estás listo para ordenar?"
+                   service_name="/tts_service"
+                   timeout="5000"/>
+            <Listen name="ListenReady"
+                    transcribed_text="{ready_response}"
+                    service_name="/stt_service"
+                    timeout="10000"/>
+            <Confirmation name="CheckReady"
+                          text="{ready_response}"
+
+                          service_name="/yesno_service"
+                          timeout="5000"/>
+          </Sequence>
+          <Sequence>
+            <Speak name="SayWait"
+                   text="Está bien, esperaré un momento"
+                   service_name="/tts_service"
+                   timeout="5000"/>
+            <Delay delay_msec="3000">
+              <AlwaysFailure/>
+            </Delay>
+          </Sequence>
+        </Fallback>
       </RetryUntilSuccessful>
       <Speak name="AskOrder"
              text="Perfecto. ¿Qué deseas beber y comer?"
@@ -88,7 +84,6 @@
     <Action ID="Confirmation"
             editable="true">
       <input_port name="text"/>
-      <input_port name="result"/>
       <input_port name="service_name"/>
       <input_port name="timeout"/>
     </Action>

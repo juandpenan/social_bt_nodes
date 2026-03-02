@@ -15,9 +15,10 @@ namespace social_bt_nodes
  * @brief BehaviorTree node that calls the YesNo service for confirmation
  * 
  * This node calls the /yesno_service to detect yes/no responses.
+ * Returns SUCCESS if the user confirms (YES), FAILURE otherwise.
  * 
  * XML Usage:
- *   <Confirmation text="{input_text}" result="{yes_or_no}" 
+ *   <Confirmation text="{input_text}" 
  *                 service_name="/yesno_service" timeout="10000"/>
  * 
  * Ports:
@@ -25,8 +26,11 @@ namespace social_bt_nodes
  *     - text (string): The text to analyze for yes/no
  *     - service_name (string, default: "/yesno_service"): YesNo service name
  *     - timeout (int, default: 10000): Service call timeout in ms
- *   Output:
- *     - result (string): "YES" or "NO" response
+ * 
+ * Returns:
+ *   - SUCCESS: User confirmed (result is "YES")
+ *   - FAILURE: User did not confirm (result is "NO") or errors occurred
+ *   - RUNNING: Waiting for service response
  */
 class Confirmation : public BT::StatefulActionNode
 {
@@ -48,8 +52,7 @@ public:
     return {
       BT::InputPort<std::string>("text", "The text to analyze for yes/no"),
       BT::InputPort<std::string>("service_name", "/yesno_service", "YesNo service name"),
-      BT::InputPort<int>("timeout", 10000, "Service call timeout (ms)"),
-      BT::OutputPort<std::string>("result", "YES or NO response")
+      BT::InputPort<int>("timeout", 10000, "Service call timeout (ms)")
     };
   }
 
