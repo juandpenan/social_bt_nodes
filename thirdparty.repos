@@ -10,8 +10,8 @@ repositories:
     url: git@github.com:rodperex/simple_perception.git
   thirdparty/audio_common:
     type: git
-    url: https://github.com/mgonzs13/audio_common.git
-    version: main
+    url: git@github.com:rodperex/audio_common.git
+    version: cpp
   thirdparty/sound_play:
     type: git
     url: git@github.com:rodperex/sound_play.git
