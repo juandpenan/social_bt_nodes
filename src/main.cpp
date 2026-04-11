@@ -4,6 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp/bt_factory.h"
 #include "behaviortree_cpp/loggers/groot2_publisher.h"
+#include "behaviortree_cpp/loggers/bt_cout_logger.h"
 
 int main(int argc, char** argv)
 {
@@ -59,6 +60,9 @@ int main(int argc, char** argv)
     return 1;
   }
   
+  // StdCout logger: prints node status transitions to stdout
+  BT::StdCoutLogger cout_logger(tree);
+
   // Optional: Enable Groot2 monitoring
   std::unique_ptr<BT::Groot2Publisher> groot_publisher;
   // try {
