@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/support/set_ros2_param.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 
 namespace social_bt_nodes
 {
@@ -23,21 +24,21 @@ BT::NodeStatus SetRos2Param::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "SetRos2Param: missing required input 'node_name'");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'node_name'");
   }
   
   if (!getInput("param_name", param_name_)) {
     RCLCPP_ERROR(node_->get_logger(), 
       "SetRos2Param: missing required input 'param_name'");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'param_name'");
   }
   
   if (!getInput("param_value", param_value_)) {
     RCLCPP_ERROR(node_->get_logger(), 
       "SetRos2Param: missing required input 'param_value'");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'param_value'");
   }
   
   if (!getInput("param_type", param_type_)) {
@@ -67,7 +68,7 @@ BT::NodeStatus SetRos2Param::onStart()
       "SetRos2Param: Service '%s' not available after %d ms. Is node '%s' running?", 
       service_name.c_str(), timeout_ms_, node_name_.c_str());
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "set_parameters service for node '" + node_name_ + "' not available");
   }
   
   RCLCPP_INFO(node_->get_logger(), 
@@ -96,7 +97,7 @@ BT::NodeStatus SetRos2Param::onRunning()
 {
   if (!future_result_) {
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "no pending service future");
   }
   
   auto status = future_result_->wait_for(std::chrono::milliseconds(0));
@@ -117,7 +118,7 @@ BT::NodeStatus SetRos2Param::onRunning()
       RCLCPP_ERROR(node_->get_logger(), 
         "SetRos2Param: Failed to set parameter: %s", reason.c_str());
       setOutput("success", false);
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), "failed to set " + node_name_ + "." + param_name_ + ": " + reason);
     }
   }
   

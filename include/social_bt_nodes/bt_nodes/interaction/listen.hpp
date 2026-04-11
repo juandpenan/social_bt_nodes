@@ -41,6 +41,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Listens and transcribes speech to text using an STT service.";
+
   static BT::PortsList providedPorts()
   {
     return {

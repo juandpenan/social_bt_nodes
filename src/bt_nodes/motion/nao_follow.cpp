@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/motion/nao_follow.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 #include "tf2/exceptions.h"
 #include <cmath>
 
@@ -222,7 +223,7 @@ BT::NodeStatus NaoFollow::onRunning()
   } catch (const tf2::TransformException & ex) {
     RCLCPP_WARN(node_->get_logger(), "Lost target: %s", ex.what());
     stop_robot();
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "lost target: " + std::string(ex.what()));
   }
 }
 

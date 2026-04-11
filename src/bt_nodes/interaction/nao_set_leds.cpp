@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/interaction/nao_set_leds.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 #include <sstream>
 
 namespace social_bt_nodes
@@ -88,7 +89,7 @@ BT::NodeStatus NaoSetLeds::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoSetLeds: Missing required input 'led_ids'");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'led_ids'");
   }
 
   auto led_ids = parse_led_ids(led_ids_str);
@@ -96,7 +97,7 @@ BT::NodeStatus NaoSetLeds::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoSetLeds: No valid LED IDs parsed from '%s'", led_ids_str.c_str());
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "no valid LED IDs parsed from '" + led_ids_str + "'");
   }
 
   // Wait for action server
@@ -104,7 +105,7 @@ BT::NodeStatus NaoSetLeds::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoSetLeds: Action server not available");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "action server not available");
   }
 
   // Prepare goal
@@ -193,7 +194,7 @@ BT::NodeStatus NaoSetLeds::onRunning()
       auto future_cancel = action_client_->async_cancel_goal(goal_handle_);
     }
     
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "action timeout exceeded");
   }
 
   // Check if goal was rejected
@@ -205,13 +206,16 @@ BT::NodeStatus NaoSetLeds::onRunning()
   if (!goal_accepted_) {
     RCLCPP_ERROR(node_->get_logger(), "NaoSetLeds: Goal was rejected");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "goal was rejected");
   }
 
   // Check if action completed
   if (goal_completed_) {
     setOutput("success", goal_succeeded_);
-    return goal_succeeded_ ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+    if (!goal_succeeded_) {
+      return bt_failure(config(), registrationName(), "action completed but did not succeed");
+    }
+    return BT::NodeStatus::SUCCESS;
   }
 
   return BT::NodeStatus::RUNNING;

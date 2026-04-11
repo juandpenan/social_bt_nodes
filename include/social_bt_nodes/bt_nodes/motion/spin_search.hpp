@@ -27,6 +27,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Makes the robot spin in place to search for a target, stopping on touch sensor input.";
+
   static BT::PortsList providedPorts()
   {
     return {

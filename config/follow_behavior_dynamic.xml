@@ -12,7 +12,17 @@
   
   <BehaviorTree ID="FollowBehavior">
     
-    <ReactiveFallback name="MainBehavior">
+    <Sequence name="SetupAndFollow">
+      
+      <!-- First, set the perception target to the desired class -->
+      <SetPerceptionTarget 
+        name="SetTargetToPerson"
+        target_class="tv"
+        service_name="/set_perception_target"
+        timeout="2000"/>
+      
+      <!-- Then, continuously follow or search for the target -->
+      <ReactiveFallback name="MainBehavior">
       
       <!-- Branch 1: If target is detected, follow it -->
       <ReactiveSequence name="FollowIfDetected">
@@ -46,7 +56,9 @@
         angular_speed="1.0"
         cmd_vel_topic="/target"/>
       
-    </ReactiveFallback>
+      </ReactiveFallback>
+      
+    </Sequence>
     
   </BehaviorTree>
   

@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/interaction/speak_enum.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 #include <sstream>
 #include <algorithm>
 
@@ -26,7 +27,7 @@ BT::NodeStatus SpeakEnum::onStart()
   
   if (!getInput("text", text)) {
     RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: missing required input 'text'");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'text'");
   }
   
   if (!getInput("separator", separator)) {
@@ -50,7 +51,7 @@ BT::NodeStatus SpeakEnum::onStart()
   
   if (items.empty()) {
     RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: no items found in text");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "no items found in text");
   }
   
   // Build the enumerated text
@@ -68,7 +69,7 @@ BT::NodeStatus SpeakEnum::onStart()
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
       "SpeakEnum: Service '%s' not available yet", service_name_.c_str());
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");
   }
   
   // Prepare and send request
@@ -89,7 +90,7 @@ BT::NodeStatus SpeakEnum::onRunning()
   // First, wait for service call to complete
   if (!waiting_for_speech_completion_) {
     if (!future_result_) {
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), "no pending service future");
     }
     
     auto status = future_result_->wait_for(std::chrono::milliseconds(0));
@@ -100,7 +101,7 @@ BT::NodeStatus SpeakEnum::onRunning()
       if (!result->success) {
         RCLCPP_ERROR(node_->get_logger(), 
           "SpeakEnum: Speech failed: %s", result->debug.c_str());
-        return BT::NodeStatus::FAILURE;
+        return bt_failure(config(), registrationName(), "speech service failed: " + result->debug);
       }
       
       // Service call succeeded, now calculate speech duration

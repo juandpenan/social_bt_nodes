@@ -99,6 +99,11 @@ install(DIRECTORY
 )
 
 install(DIRECTORY
+  node_descriptions/
+  DESTINATION share/${PROJECT_NAME}/node_descriptions
+)
+
+install(DIRECTORY
   launch/
   DESTINATION share/${PROJECT_NAME}/launch
 )

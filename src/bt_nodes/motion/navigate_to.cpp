@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/motion/navigate_to.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
@@ -65,7 +66,7 @@ BT::NodeStatus NavigateTo::onStart()
     error_msg_ = "Nav2 action server not available";
     RCLCPP_ERROR(node_->get_logger(), "NavigateTo: %s", error_msg_.c_str());
     setOutput("error_msg", error_msg_);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), error_msg_);
   }
 
   // Create goal pose
@@ -92,7 +93,7 @@ BT::NodeStatus NavigateTo::onStart()
       error_msg_ = std::string("Failed to get transform: ") + e.what();
       RCLCPP_ERROR(node_->get_logger(), "NavigateTo: %s", error_msg_.c_str());
       setOutput("error_msg", error_msg_);
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), error_msg_);
     }
   } else {
     // Navigate to coordinates
@@ -101,7 +102,7 @@ BT::NodeStatus NavigateTo::onStart()
       error_msg_ = "Missing required inputs 'x' and 'y' or 'target_frame'";
       RCLCPP_ERROR(node_->get_logger(), "NavigateTo: %s", error_msg_.c_str());
       setOutput("error_msg", error_msg_);
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), error_msg_);
     }
 
     if (!getInput("yaw", yaw)) {
@@ -149,7 +150,7 @@ BT::NodeStatus NavigateTo::onRunning()
       auto future_cancel = action_client_->async_cancel_goal(goal_handle_);
     }
     
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), error_msg_);
   }
 
   // Check if goal was rejected
@@ -157,7 +158,7 @@ BT::NodeStatus NavigateTo::onRunning()
     RCLCPP_ERROR(node_->get_logger(), "NavigateTo: Goal was rejected");
     error_msg_ = "Goal rejected by Nav2";
     setOutput("error_msg", error_msg_);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), error_msg_);
   }
 
   // Check if goal is completed
@@ -169,7 +170,7 @@ BT::NodeStatus NavigateTo::onRunning()
       RCLCPP_ERROR(node_->get_logger(), "NavigateTo: Failed to reach goal - %s", 
         error_msg_.c_str());
       setOutput("error_msg", error_msg_);
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), "failed to reach goal: " + error_msg_);
     }
   }
 

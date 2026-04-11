@@ -40,6 +40,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Synthesizes and speaks the specified text using a TTS service.";
+
   static BT::PortsList providedPorts()
   {
     return {

@@ -31,6 +31,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Makes the robot follow a person using sensor feedback and PID velocity control.";
+
   static BT::PortsList providedPorts()
   {
     return {

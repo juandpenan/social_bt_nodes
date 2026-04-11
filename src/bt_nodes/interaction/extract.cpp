@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/interaction/extract.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 
 namespace social_bt_nodes
 {
@@ -21,12 +22,12 @@ BT::NodeStatus Extract::onStart()
   // Get input parameters
   if (!getInput("interest", interest_)) {
     RCLCPP_ERROR(node_->get_logger(), "Extract: missing required input 'interest'");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'interest'");
   }
   
   if (!getInput("text", text_)) {
     RCLCPP_ERROR(node_->get_logger(), "Extract: missing required input 'text'");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'text'");
   }
   
   if (!getInput("service_name", service_name_)) {
@@ -46,7 +47,7 @@ BT::NodeStatus Extract::onStart()
   if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
     RCLCPP_WARN(node_->get_logger(), 
       "Extract: Service '%s' not available yet", service_name_.c_str());
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");
   }
   
   // Prepare and send request
@@ -68,7 +69,7 @@ BT::NodeStatus Extract::onRunning()
 {
   // Check if service call is complete
   if (!future_result_) {
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "no pending service future");
   }
   
   auto status = future_result_->wait_for(std::chrono::milliseconds(0));

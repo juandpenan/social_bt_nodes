@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/perception/set_perception_target.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 
 namespace social_bt_nodes
 {
@@ -28,7 +29,7 @@ BT::NodeStatus SetPerceptionTarget::onStart()
       "SetPerceptionTarget: missing required input 'target_class'");
     setOutput("success", false);
     setOutput("message", "Missing target_class parameter");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'target_class'");
   }
   
   if (!getInput("timeout", timeout_ms_)) {
@@ -48,7 +49,7 @@ BT::NodeStatus SetPerceptionTarget::onStart()
       service_name_.c_str(), timeout_ms_);
     setOutput("success", false);
     setOutput("message", "Service not available");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");
   }
   
   RCLCPP_INFO(node_->get_logger(), 
@@ -74,7 +75,7 @@ BT::NodeStatus SetPerceptionTarget::onRunning()
   if (!future_result_) {
     setOutput("success", false);
     setOutput("message", "No future result");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "no pending service future");
   }
   
   auto status = future_result_->wait_for(std::chrono::milliseconds(0));
@@ -95,7 +96,7 @@ BT::NodeStatus SetPerceptionTarget::onRunning()
         "SetPerceptionTarget: Failed to set target class: %s", result->message.c_str());
       setOutput("success", false);
       setOutput("message", result->message);
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), "failed to set target class: " + result->message);
     }
   }
   

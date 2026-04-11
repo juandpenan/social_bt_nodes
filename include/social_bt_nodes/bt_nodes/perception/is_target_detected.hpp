@@ -26,6 +26,9 @@ public:
 
   BT::NodeStatus tick() override;
 
+  static constexpr const char * node_description =
+    "Checks if a target is detected using TF transforms.";
+
   static BT::PortsList providedPorts()
   {
     return {

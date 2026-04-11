@@ -46,6 +46,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Sets the object class to be perceived; publishes 'perception_target' TF when detected.";
+
   static BT::PortsList providedPorts()
   {
     return {

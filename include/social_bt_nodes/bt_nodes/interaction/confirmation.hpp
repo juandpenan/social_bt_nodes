@@ -47,6 +47,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Analyzes input text for yes/no responses. Returns SUCCESS only if user confirms (YES), FAILURE otherwise.";
+
   static BT::PortsList providedPorts()
   {
     return {

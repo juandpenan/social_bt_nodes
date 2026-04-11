@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/perception/is_target_detected.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 #include "tf2/exceptions.h"
 
 namespace social_bt_nodes
@@ -34,12 +35,12 @@ BT::NodeStatus IsTargetDetected::tick()
 
   if (!getInput("target_frame", target_frame)) {
     RCLCPP_ERROR(node_->get_logger(), "Missing required input [target_frame]");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'target_frame'");
   }
 
   if (!getInput("base_frame", base_frame)) {
     RCLCPP_ERROR(node_->get_logger(), "Missing required input [base_frame]");
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'base_frame'");
   }
 
   if (!getInput("timeout", timeout)) {
@@ -62,7 +63,7 @@ BT::NodeStatus IsTargetDetected::tick()
     if (age > timeout) {
       RCLCPP_INFO(node_->get_logger(), 
         "Target transform is stale (age: %.2f s > timeout: %.2f s)", age, timeout);
-      return BT::NodeStatus::FAILURE;
+      return bt_failure(config(), registrationName(), "target transform is stale");
     }
 
     RCLCPP_DEBUG(node_->get_logger(), "Target detected at (%f, %f, %f)",
@@ -78,7 +79,7 @@ BT::NodeStatus IsTargetDetected::tick()
     return BT::NodeStatus::SUCCESS;
   } catch (const tf2::TransformException & ex) {
     RCLCPP_INFO(node_->get_logger(), "Target not detected: %s", ex.what());
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "target not detected: " + std::string(ex.what()));
   }
 }
 

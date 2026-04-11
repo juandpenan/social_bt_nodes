@@ -44,6 +44,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Extracts information of interest from a text using an LLM service.";
+
   static BT::PortsList providedPorts()
   {
     return {

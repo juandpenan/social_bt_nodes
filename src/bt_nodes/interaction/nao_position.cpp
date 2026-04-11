@@ -1,4 +1,5 @@
 #include "social_bt_nodes/bt_nodes/interaction/nao_position.hpp"
+#include "social_bt_nodes/bt_failure.hpp"
 
 namespace social_bt_nodes
 {
@@ -58,12 +59,11 @@ BT::NodeStatus NaoPosition::onStart()
   start_time_ = node_->now();
 
   // Get action name
-  std::string action_name;
-  if (!getInput("action_name", action_name)) {
+  if (!getInput("action_name", action_name_)) {
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoPosition: Missing required input 'action_name'");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "missing required input 'action_name'");
   }
 
   // Wait for action server
@@ -71,15 +71,15 @@ BT::NodeStatus NaoPosition::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoPosition: Action server not available");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "action server not available");
   }
 
   // Prepare and send goal
   auto goal_msg = PosPlay::Goal();
-  goal_msg.action_name = action_name;
+  goal_msg.action_name = action_name_;
 
   RCLCPP_INFO(node_->get_logger(), 
-    "NaoPosition: Sending goal to execute action '%s'", action_name.c_str());
+    "NaoPosition: Sending goal to execute action '%s'", action_name_.c_str());
 
   auto send_goal_options = rclcpp_action::Client<PosPlay>::SendGoalOptions();
   send_goal_options.goal_response_callback =
@@ -105,7 +105,7 @@ BT::NodeStatus NaoPosition::onRunning()
       auto future_cancel = action_client_->async_cancel_goal(goal_handle_);
     }
     
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "action timeout exceeded");
   }
 
   // Check if goal was rejected
@@ -117,13 +117,16 @@ BT::NodeStatus NaoPosition::onRunning()
   if (!goal_accepted_) {
     RCLCPP_ERROR(node_->get_logger(), "NaoPosition: Goal was rejected");
     setOutput("success", false);
-    return BT::NodeStatus::FAILURE;
+    return bt_failure(config(), registrationName(), "goal was rejected");
   }
 
   // Check if action completed
   if (goal_completed_) {
     setOutput("success", goal_succeeded_);
-    return goal_succeeded_ ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+    if (!goal_succeeded_) {
+      return bt_failure(config(), registrationName(), "action completed but did not succeed");
+    }
+    return BT::NodeStatus::SUCCESS;
   }
 
   return BT::NodeStatus::RUNNING;

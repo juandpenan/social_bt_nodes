@@ -49,6 +49,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Enumerates and speaks a list of items using TTS with proper conjunction.";
+
   static BT::PortsList providedPorts()
   {
     return {

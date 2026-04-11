@@ -50,6 +50,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Sets a parameter on a ROS 2 node.";
+
   static BT::PortsList providedPorts()
   {
     return {

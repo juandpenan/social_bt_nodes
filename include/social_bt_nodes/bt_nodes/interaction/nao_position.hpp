@@ -47,6 +47,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Executes a predefined movement action on the NAO robot.";
+
   static BT::PortsList providedPorts()
   {
     return {
@@ -67,6 +70,7 @@ private:
   GoalHandlePosPlay::SharedPtr goal_handle_;
   rclcpp::Time start_time_;
   double timeout_;
+  std::string action_name_;
   bool goal_accepted_;
   bool goal_completed_;
   bool goal_succeeded_;

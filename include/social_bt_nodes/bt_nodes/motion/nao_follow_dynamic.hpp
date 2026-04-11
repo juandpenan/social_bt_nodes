@@ -31,6 +31,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Follows a person with dynamic speed and minimum-distance adjustments using PID velocity control.";
+
   static BT::PortsList providedPorts()
   {
     return {

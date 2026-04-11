@@ -73,6 +73,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Controls the NAO robot LEDs (color, mode, intensity) via action server.";
+
   static BT::PortsList providedPorts()
   {
     return {

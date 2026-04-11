@@ -33,6 +33,9 @@ public:
   BT::NodeStatus onRunning() override;
   void onHalted() override;
 
+  static constexpr const char * node_description =
+    "Navigates to a target position using a Nav2 action server.";
+
   static BT::PortsList providedPorts()
   {
     return {
