@@ -69,7 +69,7 @@ Synthesizes and speaks the specified text using a TTS service.
 
 | Port | Dir | Type | Default | Description |
 |---|---|---|---|---|
-| `text` | In | string | **required** | Text to speak |
+| `text` | In | string | **required** | Text to speak. Can be a hardcoded literal (e.g. `text="Hello!"`) or a blackboard reference written by a previous node (e.g. `text="{extracted_info}"`). Must be set at runtime — never use an unwritten blackboard reference. |
 | `service_name` | In | string | `/tts_service` | TTS service name |
 | `timeout` | In | int | `5000` | Max wait (ms) |
 
@@ -82,7 +82,7 @@ Enumerates and speaks a list of items with proper language conjunction (e.g. "a,
 
 | Port | Dir | Type | Default | Description |
 |---|---|---|---|---|
-| `text` | In | string | **required** | Items separated by `separator` |
+| `text` | In | string | **required** | Comma-separated list of items to speak. Can be a hardcoded literal (e.g. `text="soup,salad,water"`) or a blackboard reference written by a previous node (e.g. `text="{full_order}"`). Must be set at runtime — never use an unwritten blackboard reference. |
 | `separator` | In | string | `,` | Item separator |
 | `language` | In | string | `en` | `en` or `es` |
 | `service_name` | In | string | `/tts_service` | TTS service name |
@@ -106,7 +106,7 @@ Analyzes input text for yes/no responses. Returns `SUCCESS` only if the user con
 
 | Port | Dir | Type | Default | Description |
 |---|---|---|---|---|
-| `text` | In | string | **required** | Text to analyze |
+| `text` | In | string | **required** | Text to analyze for yes/no response. Can be a hardcoded literal or a blackboard reference written by a previous node (e.g. `text="{transcribed_text}"`). Must be set at runtime — never use an unwritten blackboard reference. |
 | `service_name` | In | string | `/yesno_service` | Service name |
 | `timeout` | In | int | `10000` | Max wait (ms) |
 
