@@ -396,7 +396,7 @@ bt_nodes:
 
   - name: "SpinSearch"
     type: "Action"
-    description: "Makes the robot spin in place to search for targets."
+    description: "Initiates a continuous spinning motion to scan the environment. As a non-terminating action that rotates the robot incrementally per tick and always yields RUNNING, it functions as a background maneuver that relies on parent reactive nodes to run concurrently with target detection conditions."
     ports:
       - name: "angular_speed"
         direction: "Input"
