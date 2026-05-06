@@ -19,17 +19,15 @@ namespace social_bt_nodes
  * 
  * XML Usage:
  *   <SetPerceptionTarget 
- *     service_name="/set_perception_target" 
- *     target_class="person"/>
+ *     target="person"
+ *     frame_id="{target_frame}"/>
  * 
  * Ports:
  *   Input:
  *     - service_name (string, default: "/set_perception_target"): Service name
- *     - target_class (string): Target class to track (e.g., "person", "tv", "bottle")
- *     - timeout (int, default: 2000): Service call timeout in ms
+ *     - target (string): Target class to track (e.g., "person", "tv", "bottle")
  *   Output:
- *     - success (bool): Whether the service call succeeded
- *     - message (string): Response message from the service
+ *     - frame_id (string): TF frame associated with the selected target class
  */
 class SetPerceptionTarget : public BT::StatefulActionNode
 {
@@ -52,12 +50,10 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("service_name", "/set_perception_target", 
+      BT::InputPort<std::string>("service_name", "/set_perception_target",
         "Name of the perception target service"),
-      BT::InputPort<std::string>("target_class", "Target class to track"),
-      BT::InputPort<int>("timeout", 2000, "Service call timeout (ms)"),
-      BT::OutputPort<bool>("success", "Whether the service call succeeded"),
-      BT::OutputPort<std::string>("message", "Response message from service")
+      BT::InputPort<std::string>("target", "Target class to track"),
+      BT::OutputPort<std::string>("frame_id", "TF frame associated with the selected target")
     };
   }
 
@@ -70,6 +66,9 @@ private:
   
   std::string service_name_;
   std::string target_class_;
+  std::string last_applied_target_class_;
+  std::string last_service_name_;
+  bool has_applied_target_;
   int timeout_ms_;
 };
 

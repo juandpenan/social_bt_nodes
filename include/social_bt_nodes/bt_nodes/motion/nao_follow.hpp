@@ -78,6 +78,7 @@ private:
   double vel_rot_avoidance_;
   bool stop_requested_;
   bool danger_;
+  bool last_touch_pressed_;
   bool is_rotating_;  // Track if currently in rotation mode for hysteresis
   
   // PID controller for angular velocity

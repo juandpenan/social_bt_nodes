@@ -89,7 +89,7 @@ BT::NodeStatus NaoSetLeds::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoSetLeds: Missing required input 'led_ids'");
     setOutput("success", false);
-    return bt_failure(config(), registrationName(), "missing required input 'led_ids'");
+    return bt_failure(config(), registrationName(), "missing required input 'led_ids'", "bt_config_error");
   }
 
   auto led_ids = parse_led_ids(led_ids_str);

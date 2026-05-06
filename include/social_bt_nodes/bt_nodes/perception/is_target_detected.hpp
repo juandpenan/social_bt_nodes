@@ -34,7 +34,8 @@ public:
     return {
       BT::InputPort<std::string>("target_frame", "target", "Target TF frame to check"),
       BT::InputPort<std::string>("base_frame", "base_link", "Base TF frame"),
-      BT::InputPort<double>("timeout", 0.5, "Time to wait for detection (seconds)")
+      BT::InputPort<double>("timeout", 0.5, "Time to wait for detection (seconds)"),
+      BT::OutputPort<std::string>("detected_frame", "Writes the detected class/frame (same as 'target_frame') to the blackboard.")
     };
   }
 

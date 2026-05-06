@@ -22,12 +22,12 @@ BT::NodeStatus Extract::onStart()
   // Get input parameters
   if (!getInput("interest", interest_)) {
     RCLCPP_ERROR(node_->get_logger(), "Extract: missing required input 'interest'");
-    return bt_failure(config(), registrationName(), "missing required input 'interest'");
+    return bt_failure(config(), registrationName(), "missing required input 'interest'", "bt_config_error");
   }
   
   if (!getInput("text", text_)) {
     RCLCPP_ERROR(node_->get_logger(), "Extract: missing required input 'text'");
-    return bt_failure(config(), registrationName(), "missing required input 'text'");
+    return bt_failure(config(), registrationName(), "missing required input 'text'", "bt_config_error");
   }
   
   if (!getInput("service_name", service_name_)) {
@@ -44,7 +44,7 @@ BT::NodeStatus Extract::onStart()
   }
   
   // Wait for service to be available
-  if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
+  if (!client_->wait_for_service(std::chrono::milliseconds(timeout_ms_))) {
     RCLCPP_WARN(node_->get_logger(), 
       "Extract: Service '%s' not available yet", service_name_.c_str());
     return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");

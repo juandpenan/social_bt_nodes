@@ -13,6 +13,7 @@ NaoFollowDynamic::NaoFollowDynamic(
   vel_rot_avoidance_(0.0),
   stop_requested_(false),
   danger_(false),
+  last_touch_pressed_(false),
   angular_pid_(1.0, 0.0, 0.3),  // kp=1.0, ki=0.0, kd=0.3
   linear_pid_(2.0, 0.0, 0.2)    // kp=0.8, ki=0.0, kd=0.2
 {
@@ -293,7 +294,9 @@ void NaoFollowDynamic::sonar_callback(
 void NaoFollowDynamic::touch_callback(
   const nao_lola_sensor_msgs::msg::Touch::SharedPtr msg)
 {
-  if (msg->head_front || msg->head_middle || msg->head_rear) {
+  const bool touch_pressed = msg->head_front || msg->head_middle || msg->head_rear;
+
+  if (touch_pressed && !last_touch_pressed_) {
     stop_requested_ = !stop_requested_;
     if (stop_requested_) {
       RCLCPP_INFO(node_->get_logger(), "Touch detected: Stopping robot");
@@ -301,6 +304,8 @@ void NaoFollowDynamic::touch_callback(
       RCLCPP_INFO(node_->get_logger(), "Touch detected: Resuming robot");
     }
   }
+
+  last_touch_pressed_ = touch_pressed;
 }
 
 }  // namespace social_bt_nodes

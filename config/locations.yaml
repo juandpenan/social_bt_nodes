@@ -1,0 +1,8 @@
+- location: general_checkup
+  keywords: [general, appointment, checkup, consultation, routine]
+- location: lab_test  
+  keywords: [lab, test, analysis, blood, urine]
+- location: vaccination
+  keywords: [vaccination, vaccine, immunization, shot]
+- location: follow_up
+  keywords: [follow-up, followup, follow up, check-in, review]

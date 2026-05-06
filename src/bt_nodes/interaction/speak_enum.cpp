@@ -2,9 +2,127 @@
 #include "social_bt_nodes/bt_failure.hpp"
 #include <sstream>
 #include <algorithm>
+#include <cctype>
+#include <stdexcept>
 
 namespace social_bt_nodes
 {
+
+namespace
+{
+
+std::string trim_copy(const std::string & value)
+{
+  std::size_t start = 0;
+  while (start < value.size() && std::isspace(static_cast<unsigned char>(value[start]))) {
+    ++start;
+  }
+  std::size_t end = value.size();
+  while (end > start && std::isspace(static_cast<unsigned char>(value[end - 1]))) {
+    --end;
+  }
+  return value.substr(start, end - start);
+}
+
+bool resolve_blackboard_template(
+  const std::string & raw,
+  const BT::Blackboard::Ptr & blackboard,
+  std::string & resolved,
+  std::string & error)
+{
+  resolved.clear();
+  bool saw_placeholder = false;
+  std::size_t pos = 0;
+
+  while (pos < raw.size()) {
+    const std::size_t open = raw.find('{', pos);
+    if (open == std::string::npos) {
+      resolved += raw.substr(pos);
+      break;
+    }
+
+    resolved += raw.substr(pos, open - pos);
+    const std::size_t close = raw.find('}', open + 1);
+    if (close == std::string::npos) {
+      error = "unmatched '{' in text template: '" + raw + "'";
+      return false;
+    }
+
+    const std::string key = trim_copy(raw.substr(open + 1, close - open - 1));
+    if (key.empty()) {
+      error = "empty blackboard key in text template: '" + raw + "'";
+      return false;
+    }
+
+    try {
+      resolved += blackboard->get<std::string>(key);
+    } catch (const std::exception & e) {
+      error = "blackboard key '" + key + "' unavailable in text template: " + e.what();
+      return false;
+    }
+
+    saw_placeholder = true;
+    pos = close + 1;
+  }
+
+  if (!saw_placeholder) {
+    error = "template contains no blackboard placeholders";
+    return false;
+  }
+  return true;
+}
+
+bool resolve_blackboard_list_expression(
+  const std::string & raw,
+  const BT::Blackboard::Ptr & blackboard,
+  std::string & resolved,
+  std::string & error)
+{
+  const char sep = (raw.find(';') != std::string::npos) ? ';' : ',';
+
+  std::vector<std::string> tokens;
+  std::stringstream ss(raw);
+  std::string token;
+  while (std::getline(ss, token, sep)) {
+    std::string key = trim_copy(token);
+    if (key.empty()) {
+      continue;
+    }
+    if (!key.empty() && key.front() == '{') {
+      key.erase(key.begin());
+    }
+    if (!key.empty() && key.back() == '}') {
+      key.pop_back();
+    }
+    key = trim_copy(key);
+    if (!key.empty()) {
+      tokens.push_back(key);
+    }
+  }
+
+  if (tokens.empty()) {
+    error = "no tokens found in list expression: '" + raw + "'";
+    return false;
+  }
+
+  resolved.clear();
+  for (std::size_t i = 0; i < tokens.size(); ++i) {
+    const auto & key = tokens[i];
+    try {
+      if (i > 0) {
+        resolved += std::string(1, sep);
+      }
+      resolved += blackboard->get<std::string>(key);
+    } catch (const std::exception & e) {
+      error = "blackboard key '" + key + "' unavailable in list expression: " + e.what();
+      return false;
+    }
+  }
+
+  return !resolved.empty();
+}
+
+}  // namespace
 
 SpeakEnum::SpeakEnum(
   const std::string & name,
@@ -23,11 +141,35 @@ SpeakEnum::SpeakEnum(
 BT::NodeStatus SpeakEnum::onStart()
 {
   // Get input parameters
-  std::string text, separator, language;
+  std::string list, separator, language;
   
-  if (!getInput("text", text)) {
-    RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: missing required input 'text'");
-    return bt_failure(config(), registrationName(), "missing required input 'text'");
+  if (!getInput("list", list)) {
+    // BT.CPP doesn't resolve expressions like "{a},{b}" as a single input.
+    // Resolve placeholders manually for this common generation pattern.
+    std::string raw_list;
+    auto input_it = config().input_ports.find("list");
+    if (input_it != config().input_ports.end()) {
+      raw_list = input_it->second;
+    }
+
+    std::string resolved_list;
+    std::string resolve_error;
+    if (!raw_list.empty() &&
+      (resolve_blackboard_template(raw_list, config().blackboard, resolved_list, resolve_error) ||
+      resolve_blackboard_list_expression(raw_list, config().blackboard, resolved_list, resolve_error)) &&
+      !resolved_list.empty())
+    {
+      list = resolved_list;
+    } else {
+      if (!raw_list.empty()) {
+        RCLCPP_WARN(
+          node_->get_logger(),
+          "SpeakEnum: could not resolve list template '%s': %s",
+          raw_list.c_str(), resolve_error.c_str());
+      }
+      RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: missing required input 'list'");
+      return bt_failure(config(), registrationName(), "missing required input 'list'", "bt_config_error");
+    }
   }
   
   if (!getInput("separator", separator)) {
@@ -46,19 +188,19 @@ BT::NodeStatus SpeakEnum::onStart()
     timeout_ms_ = 5000;
   }
   
-  // Split the text into items
-  auto items = split_string(text, separator);
+  // Split the list into items
+  auto items = split_string(list, separator);
   
   if (items.empty()) {
-    RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: no items found in text");
-    return bt_failure(config(), registrationName(), "no items found in text");
+    RCLCPP_ERROR(node_->get_logger(), "SpeakEnum: no items found in list");
+    return bt_failure(config(), registrationName(), "no items found in list");
   }
   
   // Build the enumerated text
   enumerated_text_ = build_enumerated_text(items, language);
   
   RCLCPP_INFO(node_->get_logger(), 
-    "SpeakEnum: Enumerated text: '%s'", enumerated_text_.c_str());
+    "SpeakEnum: Enumerated list: '%s'", enumerated_text_.c_str());
   
   // Create service client if not already created or if service name changed
   if (!client_ || client_->get_service_name() != service_name_) {
@@ -66,7 +208,7 @@ BT::NodeStatus SpeakEnum::onStart()
   }
   
   // Wait for service to be available
-  if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
+  if (!client_->wait_for_service(std::chrono::milliseconds(timeout_ms_))) {
     RCLCPP_WARN(node_->get_logger(), 
       "SpeakEnum: Service '%s' not available yet", service_name_.c_str());
     return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");

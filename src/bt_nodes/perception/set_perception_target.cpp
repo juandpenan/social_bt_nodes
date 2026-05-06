@@ -19,21 +19,17 @@ SetPerceptionTarget::SetPerceptionTarget(
 
 BT::NodeStatus SetPerceptionTarget::onStart()
 {
-  // Get input parameters
-  if (!getInput("service_name", service_name_)) {
+  service_name_ = "/set_perception_target";
+  timeout_ms_ = 2000;
+
+  if (!getInput("service_name", service_name_) || service_name_.empty()) {
     service_name_ = "/set_perception_target";
   }
   
-  if (!getInput("target_class", target_class_)) {
+  if (!getInput("target", target_class_)) {
     RCLCPP_ERROR(node_->get_logger(), 
-      "SetPerceptionTarget: missing required input 'target_class'");
-    setOutput("success", false);
-    setOutput("message", "Missing target_class parameter");
-    return bt_failure(config(), registrationName(), "missing required input 'target_class'");
-  }
-  
-  if (!getInput("timeout", timeout_ms_)) {
-    timeout_ms_ = 2000;
+      "SetPerceptionTarget: missing required input 'target'");
+    return bt_failure(config(), registrationName(), "missing required input 'target'", "bt_config_error");
   }
   
   RCLCPP_INFO(node_->get_logger(), 
@@ -47,8 +43,6 @@ BT::NodeStatus SetPerceptionTarget::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "SetPerceptionTarget: Service '%s' not available after %d ms", 
       service_name_.c_str(), timeout_ms_);
-    setOutput("success", false);
-    setOutput("message", "Service not available");
     return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");
   }
   
@@ -73,8 +67,6 @@ BT::NodeStatus SetPerceptionTarget::onStart()
 BT::NodeStatus SetPerceptionTarget::onRunning()
 {
   if (!future_result_) {
-    setOutput("success", false);
-    setOutput("message", "No future result");
     return bt_failure(config(), registrationName(), "no pending service future");
   }
   
@@ -88,14 +80,11 @@ BT::NodeStatus SetPerceptionTarget::onRunning()
       RCLCPP_INFO(node_->get_logger(), 
         "SetPerceptionTarget: Successfully set target class to '%s': %s", 
         target_class_.c_str(), result->message.c_str());
-      setOutput("success", true);
-      setOutput("message", result->message);
+      setOutput("frame_id", target_class_);
       return BT::NodeStatus::SUCCESS;
     } else {
       RCLCPP_ERROR(node_->get_logger(), 
         "SetPerceptionTarget: Failed to set target class: %s", result->message.c_str());
-      setOutput("success", false);
-      setOutput("message", result->message);
       return bt_failure(config(), registrationName(), "failed to set target class: " + result->message);
     }
   }
@@ -107,8 +96,6 @@ void SetPerceptionTarget::onHalted()
 {
   RCLCPP_WARN(node_->get_logger(), "SetPerceptionTarget: Halted");
   future_result_.reset();
-  setOutput("success", false);
-  setOutput("message", "Halted");
 }
 
 }  // namespace social_bt_nodes

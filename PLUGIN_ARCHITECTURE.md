@@ -52,7 +52,7 @@ social_bt_nodes/
 │       ├── motion/
 │       │   ├── nao_follow.cpp                          # Basic follow
 │       │   ├── nao_follow_dynamic.cpp                  # Advanced follow with PID
-│       │   ├── spin_search.cpp                         # Spin search
+│       │   ├── spin.cpp                                # Spin search
 │       │   └── navigate_to.cpp                         # Nav2 navigation
 │       ├── perception/
 │       │   └── is_target_detected.cpp                  # Target detection check
@@ -61,7 +61,7 @@ social_bt_nodes/
 │           ├── speak_enum.cpp                          # Enumerated speech
 │           ├── listen.cpp                              # Speech recognition
 │           ├── extract.cpp                             # Information extraction
-│           └── confirmation.cpp                        # Yes/No confirmation
+│           └── yesno.cpp                               # Yes/No confirmation
 ├── include/social_bt_nodes/bt_nodes/
 │   ├── motion/
 │   │   ├── nao_follow.hpp
@@ -75,7 +75,7 @@ social_bt_nodes/
 │   │   ├── speak_enum.hpp
 │   │   ├── listen.hpp
 │   │   ├── extract.hpp
-│   │   └── confirmation.hpp
+│   │   └── yesno.hpp
 │   └── pid_controller.hpp                              # PID utility
 ├── social_bt_nodes/                                    # Python nodes
 │   ├── entity_tracker_fake_3d.py                       # TF publisher
@@ -180,7 +180,7 @@ Key sections for plugin architecture:
 # Build plugin library as SHARED
 add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/perception/is_target_detected.cpp
-  src/bt_nodes/motion/spin_search.cpp
+  src/bt_nodes/motion/spin.cpp
   src/bt_nodes/motion/nao_follow.cpp
   src/bt_nodes/motion/nao_follow_dynamic.cpp
   src/bt_nodes/motion/navigate_to.cpp
@@ -188,7 +188,7 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/interaction/speak_enum.cpp
   src/bt_nodes/interaction/listen.cpp
   src/bt_nodes/interaction/extract.cpp
-  src/bt_nodes/interaction/confirmation.cpp
+  src/bt_nodes/interaction/yesno.cpp
   src/bt_nodes/bt_plugins.cpp
 )
 

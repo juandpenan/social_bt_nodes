@@ -34,7 +34,7 @@ BT::NodeStatus Listen::onStart()
   }
   
   // Wait for service to be available
-  if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
+  if (!client_->wait_for_service(std::chrono::milliseconds(timeout_ms_))) {
     RCLCPP_WARN(node_->get_logger(), 
       "Listen: Service '%s' not available yet", service_name_.c_str());
     return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");

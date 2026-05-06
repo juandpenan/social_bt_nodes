@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="SpinUntilDetected">
+    <Sequence>
+      <SetPerceptionTarget target="sports ball"/>
+      <ReactiveFallback>
+        <IsDetected target="target" base_frame="base_link" timeout="3.0"/>
+        <Spin angular_speed="0.6"/>
+      </ReactiveFallback>
+    </Sequence>
+  </BehaviorTree>
+</root>

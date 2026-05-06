@@ -14,15 +14,18 @@ namespace social_bt_nodes
 /**
  * @brief BehaviorTree node that calls the Extract service
  * 
- * This node calls the /extract_service to extract specific information from text.
+ * This node calls the /extract_service to extract exactly one information field from text.
  * 
  * XML Usage:
- *   <Extract interest="person's name" text="{input_text}" 
+ *   <Extract interest="person_name" text="{input_text}" 
  *            extracted_info="{output}" service_name="/extract_service" timeout="10000"/>
+ *
+ * For multiple fields (e.g. first_dish, second_dish, drink), chain multiple Extract
+ * nodes sequentially, one per field, each with a different 'interest' and output variable.
  * 
  * Ports:
  *   Input:
- *     - interest (string): What information to extract (e.g., "person's name", "drink preference")
+ *     - interest (string): Single information field to extract (e.g., "first_dish" or "drink")
  *     - text (string): The text to analyze
  *     - service_name (string, default: "/extract_service"): Extract service name
  *     - timeout (int, default: 10000): Service call timeout in ms
@@ -45,16 +48,16 @@ public:
   void onHalted() override;
 
   static constexpr const char * node_description =
-    "Extracts information of interest from a text using an LLM service.";
+    "Extracts exactly one information field from a text using an LLM service. Use one Extract node per field.";
 
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("interest", "What information to extract"),
+      BT::InputPort<std::string>("interest", "Single information field to extract. Do not pass multiple fields."),
       BT::InputPort<std::string>("text", "The text to analyze"),
       BT::InputPort<std::string>("service_name", "/extract_service", "Extract service name"),
       BT::InputPort<int>("timeout", 10000, "Service call timeout (ms)"),
-      BT::OutputPort<std::string>("extracted_info", "The extracted information")
+      BT::OutputPort<std::string>("extracted_info", "Extracted value for the single requested field")
     };
   }
 

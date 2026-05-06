@@ -1,10 +1,10 @@
-#include "social_bt_nodes/bt_nodes/interaction/confirmation.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/yesno.hpp"
 #include "social_bt_nodes/bt_failure.hpp"
 
 namespace social_bt_nodes
 {
 
-Confirmation::Confirmation(
+YesNo::YesNo(
   const std::string & name,
   const BT::NodeConfig & conf)
 : BT::StatefulActionNode(name, conf)
@@ -12,17 +12,17 @@ Confirmation::Confirmation(
   // Get ROS node from blackboard
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("Confirmation: 'node' not found in blackboard");
+    throw BT::RuntimeError("YesNo: 'node' not found in blackboard");
   }
   node_ = node_any;
 }
 
-BT::NodeStatus Confirmation::onStart()
+BT::NodeStatus YesNo::onStart()
 {
   // Get input parameters
   if (!getInput("text", text_)) {
-    RCLCPP_ERROR(node_->get_logger(), "Confirmation: missing required input 'text'");
-    return bt_failure(config(), registrationName(), "missing required input 'text'");
+    RCLCPP_ERROR(node_->get_logger(), "YesNo: missing required input 'text'");
+    return bt_failure(config(), registrationName(), "missing required input 'text'", "bt_config_error");
   }
   
   if (!getInput("service_name", service_name_)) {
@@ -39,9 +39,9 @@ BT::NodeStatus Confirmation::onStart()
   }
   
   // Wait for service to be available
-  if (!client_->wait_for_service(std::chrono::milliseconds(1000))) {
+  if (!client_->wait_for_service(std::chrono::milliseconds(timeout_ms_))) {
     RCLCPP_WARN(node_->get_logger(), 
-      "Confirmation: Service '%s' not available yet", service_name_.c_str());
+      "YesNo: Service '%s' not available yet", service_name_.c_str());
     return bt_failure(config(), registrationName(), "service '" + service_name_ + "' not available");
   }
   
@@ -50,7 +50,7 @@ BT::NodeStatus Confirmation::onStart()
   request->text = text_;
   
   RCLCPP_INFO(node_->get_logger(), 
-    "Confirmation: Checking for yes/no in text");
+    "YesNo: Checking for yes/no in text");
   
   future_result_ = std::make_shared<
     rclcpp::Client<simple_hri_interfaces::srv::YesNo>::FutureAndRequestId>(
@@ -59,7 +59,7 @@ BT::NodeStatus Confirmation::onStart()
   return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus Confirmation::onRunning()
+BT::NodeStatus YesNo::onRunning()
 {
   // Check if service call is complete
   if (!future_result_) {
@@ -74,7 +74,10 @@ BT::NodeStatus Confirmation::onRunning()
     // The yes/no result is in the result field
     std::string confirmation_result = result->result;
     RCLCPP_INFO(node_->get_logger(), 
-      "Confirmation: Result: '%s'", confirmation_result.c_str());
+      "YesNo: Result: '%s'", confirmation_result.c_str());
+
+    const bool confirmed = (confirmation_result == "YES");
+    setOutput("confirmed", confirmed ? std::string("true") : std::string("false"));
     
     
     // Return SUCCESS only if confirmed (YES), FAILURE otherwise
@@ -82,7 +85,7 @@ BT::NodeStatus Confirmation::onRunning()
       return BT::NodeStatus::SUCCESS;
     } else {
       RCLCPP_INFO(node_->get_logger(), 
-        "Confirmation: User did not confirm (result: '%s')", confirmation_result.c_str());
+        "YesNo: User did not confirm (result: '%s')", confirmation_result.c_str());
       return bt_failure(config(), registrationName(), "user did not confirm (result: '" + confirmation_result + "')");
     }
   }
@@ -90,9 +93,9 @@ BT::NodeStatus Confirmation::onRunning()
   return BT::NodeStatus::RUNNING;
 }
 
-void Confirmation::onHalted()
+void YesNo::onHalted()
 {
-  RCLCPP_WARN(node_->get_logger(), "Confirmation: Halted");
+  RCLCPP_WARN(node_->get_logger(), "YesNo: Halted");
   future_result_.reset();
 }
 

@@ -78,6 +78,7 @@ private:
   double vel_rot_avoidance_;
   bool stop_requested_;
   bool danger_;
+  bool last_touch_pressed_;
   
   // PID controllers
   PIDController angular_pid_;

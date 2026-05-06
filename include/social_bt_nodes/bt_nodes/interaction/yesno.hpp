@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__INTERACTION__YESNO_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__INTERACTION__YESNO_HPP_
 
 #include <memory>
 #include <string>
@@ -18,7 +18,7 @@ namespace social_bt_nodes
  * Returns SUCCESS if the user confirms (YES), FAILURE otherwise.
  * 
  * XML Usage:
- *   <YesNo text="{input_text}" 
+ *   <YesNo text="{input_text}"
  *                 service_name="/yesno_service" timeout="10000"/>
  * 
  * Ports:
@@ -32,16 +32,16 @@ namespace social_bt_nodes
  *   - FAILURE: User did not confirm (result is "NO") or errors occurred
  *   - RUNNING: Waiting for service response
  */
-class Confirmation : public BT::StatefulActionNode
+class YesNo : public BT::StatefulActionNode
 {
 public:
-  Confirmation(
+  YesNo(
     const std::string & name,
     const BT::NodeConfig & conf);
 
-  Confirmation() = delete;
+  YesNo() = delete;
 
-  ~Confirmation() = default;
+  ~YesNo() = default;
 
   BT::NodeStatus onStart() override;
   BT::NodeStatus onRunning() override;
@@ -54,6 +54,7 @@ public:
   {
     return {
       BT::InputPort<std::string>("text", "The text to analyze for yes/no"),
+      BT::OutputPort<std::string>("confirmed", "Confirmation result ('true' or 'false')"),
       BT::InputPort<std::string>("service_name", "/yesno_service", "YesNo service name"),
       BT::InputPort<int>("timeout", 10000, "Service call timeout (ms)")
     };
@@ -71,4 +72,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__CONFIRMATION_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__INTERACTION__YESNO_HPP_

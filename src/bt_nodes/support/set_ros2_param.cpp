@@ -24,21 +24,21 @@ BT::NodeStatus SetRos2Param::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "SetRos2Param: missing required input 'node_name'");
     setOutput("success", false);
-    return bt_failure(config(), registrationName(), "missing required input 'node_name'");
+    return bt_failure(config(), registrationName(), "missing required input 'node_name'", "bt_config_error");
   }
   
   if (!getInput("param_name", param_name_)) {
     RCLCPP_ERROR(node_->get_logger(), 
       "SetRos2Param: missing required input 'param_name'");
     setOutput("success", false);
-    return bt_failure(config(), registrationName(), "missing required input 'param_name'");
+    return bt_failure(config(), registrationName(), "missing required input 'param_name'", "bt_config_error");
   }
   
   if (!getInput("param_value", param_value_)) {
     RCLCPP_ERROR(node_->get_logger(), 
       "SetRos2Param: missing required input 'param_value'");
     setOutput("success", false);
-    return bt_failure(config(), registrationName(), "missing required input 'param_value'");
+    return bt_failure(config(), registrationName(), "missing required input 'param_value'", "bt_config_error");
   }
   
   if (!getInput("param_type", param_type_)) {

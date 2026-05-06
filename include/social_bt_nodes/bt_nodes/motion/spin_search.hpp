@@ -7,7 +7,6 @@
 #include "behaviortree_cpp/action_node.h"
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
-#include "nao_lola_sensor_msgs/msg/touch.hpp"
 
 namespace social_bt_nodes
 {
@@ -28,27 +27,23 @@ public:
   void onHalted() override;
 
   static constexpr const char * node_description =
-    "Makes the robot spin in place to search for a target, stopping on touch sensor input.";
+    "Makes the robot spin in place to search for a target until the behavior tree halts it.";
 
   static BT::PortsList providedPorts()
   {
     return {
       BT::InputPort<double>("angular_speed", 0.5, "Angular speed for spinning (rad/s)"),
-      BT::InputPort<std::string>("cmd_vel_topic", "/cmd_vel", "Command velocity topic"),
-      BT::InputPort<std::string>("touch_topic", "/sensors/touch", "Touch sensor topic")
+      BT::InputPort<std::string>("cmd_vel_topic", "/cmd_vel_muxed", "Command velocity topic")
     };
   }
 
 private:
   void stop_robot();
-  void touch_callback(const nao_lola_sensor_msgs::msg::Touch::SharedPtr msg);
 
   rclcpp::Node::SharedPtr node_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
-  rclcpp::Subscription<nao_lola_sensor_msgs::msg::Touch>::SharedPtr touch_sub_;
   
   double angular_speed_;
-  bool stop_requested_;
 };
 
 }  // namespace social_bt_nodes

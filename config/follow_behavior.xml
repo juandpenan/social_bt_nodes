@@ -49,7 +49,7 @@
       </ReactiveSequence>
       
       <!-- Branch 2: If target not detected, spin to search -->
-      <SpinSearch 
+      <Spin 
         name="SearchForTarget"
         angular_speed="1.0"
         cmd_vel_topic="/target"/>

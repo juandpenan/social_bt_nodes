@@ -13,7 +13,7 @@
                     transcribed_text="{ready_response}"
                     service_name="/stt_service"
                     timeout="10000"/>
-            <Confirmation name="CheckReady"
+            <YesNo name="CheckReady"
                           text="{ready_response}"
 
                           service_name="/yesno_service"
@@ -61,7 +61,7 @@
              service_name="/tts_service"
              timeout="5000"/>
       <SpeakEnum name="SayOrder"
-                 text="{meal}"
+                 list="{meal}"
                  separator=";"
                  language="es"
                  service_name="/tts_service"
@@ -71,7 +71,7 @@
              service_name="/tts_service"
              timeout="5000"/>
       <SpeakEnum name="SayOrder"
-                 text="{drink}"
+                 list="{drink}"
                  separator=";"
                  language="es"
                  service_name="/tts_service"
@@ -81,7 +81,7 @@
 
   <!-- Description of Node Models (used by Groot) -->
   <TreeNodesModel>
-    <Action ID="Confirmation"
+    <Action ID="YesNo"
             editable="true">
       <input_port name="text"/>
       <input_port name="service_name"/>
@@ -109,7 +109,7 @@
     </Action>
     <Action ID="SpeakEnum"
             editable="true">
-      <input_port name="text"/>
+      <input_port name="list"/>
       <input_port name="separator"/>
       <input_port name="language"/>
       <input_port name="service_name"/>

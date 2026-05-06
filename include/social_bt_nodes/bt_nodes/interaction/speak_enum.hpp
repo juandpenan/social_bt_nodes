@@ -23,12 +23,12 @@ namespace social_bt_nodes
  *   Output: "manzana, naranja y plátano"
  * 
  * XML Usage:
- *   <SpeakEnum text="apple,orange,banana" separator="," language="en" 
+ *   <SpeakEnum list="apple,orange,banana" separator="," language="en" 
  *              service_name="/tts_service" timeout="5000"/>
  * 
  * Ports:
  *   Input:
- *     - text (string): Delimited list of words
+ *     - list (string): Delimited list of words
  *     - separator (string, default: ","): Token that separates words
  *     - language (string, default: "es"): Language code ("es" or "en")
  *     - service_name (string, default: "/tts_service"): TTS service name
@@ -55,7 +55,7 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("text", "Delimited list of words to enumerate"),
+      BT::InputPort<std::string>("list", "Delimited list of words to enumerate"),
       BT::InputPort<std::string>("separator", ",", "Separator token (default: comma)"),
       BT::InputPort<std::string>("language", "es", "Language code: 'es' or 'en'"),
       BT::InputPort<std::string>("service_name", "/tts_service", "TTS service name"),

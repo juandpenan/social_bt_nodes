@@ -63,7 +63,7 @@ BT::NodeStatus NaoPosition::onStart()
     RCLCPP_ERROR(node_->get_logger(), 
       "NaoPosition: Missing required input 'action_name'");
     setOutput("success", false);
-    return bt_failure(config(), registrationName(), "missing required input 'action_name'");
+    return bt_failure(config(), registrationName(), "missing required input 'action_name'", "bt_config_error");
   }
 
   // Wait for action server

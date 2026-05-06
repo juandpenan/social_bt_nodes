@@ -19,6 +19,8 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(nao_lola_sensor_msgs REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(yaml-cpp REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(simple_hri_interfaces REQUIRED)
 find_package(simple_perception_interfaces REQUIRED)
 find_package(nav2_msgs REQUIRED)
@@ -43,6 +45,8 @@ set(dependencies
   nav2_msgs
   nao_pos_interfaces
   nao_led_interfaces
+  yaml-cpp
+  ament_index_cpp
 )
 
 include_directories(include)
@@ -51,22 +55,26 @@ include_directories(include)
 add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/perception/is_target_detected.cpp
   src/bt_nodes/perception/set_perception_target.cpp
-  src/bt_nodes/motion/spin_search.cpp
+  src/bt_nodes/motion/spin.cpp
   src/bt_nodes/motion/nao_follow.cpp
   src/bt_nodes/motion/nao_follow_dynamic.cpp
   src/bt_nodes/motion/navigate_to.cpp
+  src/bt_nodes/motion/get_nav_location.cpp
   src/bt_nodes/interaction/speak.cpp
   src/bt_nodes/interaction/speak_enum.cpp
+  src/bt_nodes/interaction/ask.cpp
   src/bt_nodes/interaction/listen.cpp
   src/bt_nodes/interaction/extract.cpp
-  src/bt_nodes/interaction/confirmation.cpp
+  src/bt_nodes/interaction/yesno.cpp
   src/bt_nodes/interaction/nao_position.cpp
   src/bt_nodes/interaction/nao_set_leds.cpp
   src/bt_nodes/support/set_ros2_param.cpp
+  src/bt_nodes/support/stop_current_task.cpp
   src/bt_nodes/bt_plugins.cpp
 )
 
 ament_target_dependencies(social_bt_nodes_plugin ${dependencies})
+target_link_libraries(social_bt_nodes_plugin yaml-cpp)
 
 # Required for BT_REGISTER_NODES macro to work properly
 target_compile_definitions(social_bt_nodes_plugin PRIVATE BT_PLUGIN_EXPORT)

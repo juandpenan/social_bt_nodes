@@ -90,7 +90,8 @@ inline void bt_register_node_description(
 inline BT::NodeStatus bt_failure(
   const BT::NodeConfig & cfg,
   const std::string & node_name,
-  const std::string & reason)
+  const std::string & reason,
+  const std::string & failure_code = "execution_error")
 {
   if (cfg.blackboard) {
     // Look up the description registered at plugin load time.
@@ -105,6 +106,7 @@ inline BT::NodeStatus bt_failure(
     // Overwrite the shared key. The LLM orchestrator polls this key
     // after the tree returns FAILURE to build the replanning prompt.
     cfg.blackboard->set<std::string>("bt_last_failure", msg);
+    cfg.blackboard->set<std::string>("bt_last_failure_code", failure_code);
   }
   return BT::NodeStatus::FAILURE;
 }
