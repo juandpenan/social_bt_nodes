@@ -1,4 +1,4 @@
-#include "social_bt_nodes/bt_nodes/motion/nao_follow.hpp"
+#include "social_bt_nodes/bt_nodes/motion/nao/nao_follow.hpp"
 #include "social_bt_nodes/bt_failure.hpp"
 #include "tf2/exceptions.h"
 #include <cmath>

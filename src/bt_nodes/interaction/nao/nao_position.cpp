@@ -1,4 +1,4 @@
-#include "social_bt_nodes/bt_nodes/interaction/nao_position.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/nao/nao_position.hpp"
 #include "social_bt_nodes/bt_failure.hpp"
 
 namespace social_bt_nodes

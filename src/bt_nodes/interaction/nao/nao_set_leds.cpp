@@ -1,4 +1,4 @@
-#include "social_bt_nodes/bt_nodes/interaction/nao_set_leds.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/nao/nao_set_leds.hpp"
 #include "social_bt_nodes/bt_failure.hpp"
 #include <sstream>
 

@@ -55,19 +55,27 @@ include_directories(include)
 add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/perception/is_target_detected.cpp
   src/bt_nodes/perception/set_perception_target.cpp
+  src/bt_nodes/perception/get_bearing.cpp
+  src/bt_nodes/perception/get_distance.cpp
+  src/bt_nodes/perception/is_aligned.cpp
+  src/bt_nodes/perception/is_in_range.cpp
   src/bt_nodes/motion/spin.cpp
-  src/bt_nodes/motion/nao_follow.cpp
-  src/bt_nodes/motion/nao_follow_dynamic.cpp
+  src/bt_nodes/motion/nao/nao_follow.cpp
+  src/bt_nodes/motion/nao/nao_follow_dynamic.cpp
   src/bt_nodes/motion/navigate_to.cpp
   src/bt_nodes/motion/get_nav_location.cpp
+  src/bt_nodes/motion/move_forward.cpp
+  src/bt_nodes/motion/move_towards.cpp
+  src/bt_nodes/motion/rotate_to_bearing.cpp
   src/bt_nodes/interaction/speak.cpp
   src/bt_nodes/interaction/speak_enum.cpp
   src/bt_nodes/interaction/ask.cpp
   src/bt_nodes/interaction/listen.cpp
   src/bt_nodes/interaction/extract.cpp
   src/bt_nodes/interaction/yesno.cpp
-  src/bt_nodes/interaction/nao_position.cpp
-  src/bt_nodes/interaction/nao_set_leds.cpp
+  src/bt_nodes/interaction/nao/nao_position.cpp
+  src/bt_nodes/interaction/nao/nao_set_leds.cpp
+  src/bt_nodes/support/is_available.cpp
   src/bt_nodes/support/set_ros2_param.cpp
   src/bt_nodes/support/stop_current_task.cpp
   src/bt_nodes/bt_plugins.cpp
