@@ -27,12 +27,11 @@ public:
   BT::NodeStatus tick() override;
 
   static constexpr const char * node_description =
-    "Checks if a target is detected using TF transforms.";
+    "Checks if the TF frame named 'target' is detected using TF transforms.";
 
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("target_frame", "target", "Target TF frame to check"),
       BT::InputPort<std::string>("base_frame", "base_link", "Base TF frame"),
       BT::InputPort<double>("timeout", 0.5, "Time to wait for detection (seconds)"),
       BT::OutputPort<std::string>("detected_frame", "Writes the detected class/frame (same as 'target_frame') to the blackboard.")

@@ -58,8 +58,10 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/perception/get_bearing.cpp
   src/bt_nodes/perception/get_distance.cpp
   src/bt_nodes/perception/is_aligned.cpp
-  src/bt_nodes/perception/is_in_range.cpp
+  src/bt_nodes/perception/is_farther_than.cpp
+  src/bt_nodes/perception/is_target_static.cpp
   src/bt_nodes/motion/spin.cpp
+  src/bt_nodes/motion/follow.cpp
   src/bt_nodes/motion/nao/nao_follow.cpp
   src/bt_nodes/motion/nao/nao_follow_dynamic.cpp
   src/bt_nodes/motion/navigate_to.cpp
@@ -77,6 +79,7 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/interaction/nao/nao_set_leds.cpp
   src/bt_nodes/support/is_available.cpp
   src/bt_nodes/support/set_ros2_param.cpp
+  src/bt_nodes/support/is_true.cpp
   src/bt_nodes/support/stop_current_task.cpp
   src/bt_nodes/bt_plugins.cpp
 )

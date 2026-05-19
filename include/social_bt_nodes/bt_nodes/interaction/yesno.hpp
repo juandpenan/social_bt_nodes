@@ -26,6 +26,8 @@ namespace social_bt_nodes
  *     - text (string): The text to analyze for yes/no
  *     - service_name (string, default: "/yesno_service"): YesNo service name
  *     - timeout (int, default: 10000): Service call timeout in ms
+ *   Output:
+ *     - confirmed (bool): true if the answer is YES, false if the answer is NO
  * 
  * Returns:
  *   - SUCCESS: User confirmed (result is "YES")
@@ -54,7 +56,7 @@ public:
   {
     return {
       BT::InputPort<std::string>("text", "The text to analyze for yes/no"),
-      BT::OutputPort<std::string>("confirmed", "Confirmation result ('true' or 'false')"),
+      BT::OutputPort<bool>("confirmed", "Confirmation result (true or false)"),
       BT::InputPort<std::string>("service_name", "/yesno_service", "YesNo service name"),
       BT::InputPort<int>("timeout", 10000, "Service call timeout (ms)")
     };

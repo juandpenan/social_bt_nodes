@@ -27,17 +27,12 @@ IsTargetDetected::~IsTargetDetected()
 
 BT::NodeStatus IsTargetDetected::tick()
 {
-  std::string target_frame;
+  const std::string target_frame = "target";
   std::string base_frame;
 
   double timeout;
 
   RCLCPP_DEBUG(node_->get_logger(), "IsTargetDetected ticked");
-
-  if (!getInput("target_frame", target_frame)) {
-    RCLCPP_ERROR(node_->get_logger(), "Missing required input [target_frame]");
-    return bt_failure(config(), registrationName(), "missing required input 'target_frame'", "bt_config_error");
-  }
 
   if (!getInput("base_frame", base_frame)) {
     RCLCPP_ERROR(node_->get_logger(), "Missing required input [base_frame]");
@@ -84,7 +79,7 @@ BT::NodeStatus IsTargetDetected::tick()
     return BT::NodeStatus::SUCCESS;
   } catch (const tf2::TransformException & ex) {
     RCLCPP_INFO(node_->get_logger(), "Target not detected: %s", ex.what());
-    return bt_failure(config(), registrationName(), "target not detected: " + std::string(ex.what()));
+    return bt_failure(config(), registrationName(), "NO_REAL_FAILURE");
   }
 }
 

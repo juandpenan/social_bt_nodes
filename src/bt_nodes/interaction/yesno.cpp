@@ -76,9 +76,7 @@ BT::NodeStatus YesNo::onRunning()
     RCLCPP_INFO(node_->get_logger(), 
       "YesNo: Result: '%s'", confirmation_result.c_str());
 
-    const bool confirmed = (confirmation_result == "YES");
-    setOutput("confirmed", confirmed ? std::string("true") : std::string("false"));
-    
+    setOutput("confirmed", confirmation_result == "YES");
     
     // Return SUCCESS only if confirmed (YES), FAILURE otherwise
     if (confirmation_result == "YES") {
@@ -86,7 +84,7 @@ BT::NodeStatus YesNo::onRunning()
     } else {
       RCLCPP_INFO(node_->get_logger(), 
         "YesNo: User did not confirm (result: '%s')", confirmation_result.c_str());
-      return bt_failure(config(), registrationName(), "user did not confirm (result: '" + confirmation_result + "')");
+      return bt_failure(config(), registrationName(), "NO_REAL_FAILURE");
     }
   }
   

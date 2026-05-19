@@ -108,10 +108,7 @@ BT::NodeStatus IsAvailable::tick()
   if (!unavailable.empty()) {
     const auto unavailable_joined = join_semicolon(unavailable);
     setOutput("unavailable_items", unavailable_joined);
-    return bt_failure(
-      config(), registrationName(),
-      "unavailable items: '" + unavailable_joined + "'",
-      "bt_item_unavailable");
+    return bt_failure(config(), registrationName(), "NO_REAL_FAILURE");
   }
 
   setOutput("unavailable_items", std::string{});

@@ -29,7 +29,7 @@ public:
 
   static constexpr const char * node_description =
     "Moves the robot towards a target frame by computing linear and angular velocities using PID control. "
-    "Publishes velocity commands on cmd_vel topic.";
+    "Publishes velocity commands on cmd_vel topic, keeps the action active, and only returns RUNNING.";
 
   static BT::PortsList providedPorts()
   {

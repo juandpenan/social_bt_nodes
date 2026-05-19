@@ -43,7 +43,7 @@ BT::NodeStatus StopCurrentTask::tick()
     return BT::NodeStatus::SUCCESS;
   }
 
-  return BT::NodeStatus::FAILURE;
+  return bt_failure(config(), registrationName(), "NO_REAL_FAILURE");
 }
 
 }  // namespace social_bt_nodes

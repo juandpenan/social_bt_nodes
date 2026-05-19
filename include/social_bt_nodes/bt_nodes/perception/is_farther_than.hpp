@@ -1,5 +1,5 @@
-#ifndef SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_IN_RANGE_HPP_
-#define SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_IN_RANGE_HPP_
+#ifndef SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_FARTHER_THAN_HPP_
+#define SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_FARTHER_THAN_HPP_
 
 #include <memory>
 #include <string>
@@ -12,20 +12,20 @@
 namespace social_bt_nodes
 {
 
-class IsInRange : public BT::ConditionNode
+class IsFartherThan : public BT::ConditionNode
 {
 public:
-  IsInRange(const std::string & name, const BT::NodeConfig & conf);
+  IsFartherThan(const std::string & name, const BT::NodeConfig & conf);
 
   BT::NodeStatus tick() override;
 
   static constexpr const char * node_description =
-    "Checks if robot-target distance is <= distance_threshold. Returns SUCCESS when within range and FAILURE otherwise.";
+    "Checks if robot-target distance is > distance_threshold. Returns SUCCESS while the robot is farther than the threshold and FAILURE once it is within range.";
 
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("target_frame", "Target TF frame to check distance to"),
+      BT::InputPort<std::string>("target_frame", "Target TF frame to check"),
       BT::InputPort<std::string>("base_frame", "base_link", "Base TF frame for reference"),
       BT::InputPort<double>("distance_threshold", 1.0, "Distance threshold in metres"),
       BT::InputPort<double>("timeout", 0.5, "Maximum TF wait/staleness threshold in seconds")
@@ -40,4 +40,4 @@ private:
 
 }  // namespace social_bt_nodes
 
-#endif  // SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_IN_RANGE_HPP_
+#endif  // SOCIAL_BT_NODES__BT_NODES__PERCEPTION__IS_FARTHER_THAN_HPP_

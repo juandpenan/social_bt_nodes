@@ -1,4 +1,4 @@
-#include "social_bt_nodes/bt_nodes/perception/is_in_range.hpp"
+#include "social_bt_nodes/bt_nodes/perception/is_farther_than.hpp"
 
 #include <cmath>
 
@@ -8,12 +8,12 @@
 namespace social_bt_nodes
 {
 
-IsInRange::IsInRange(const std::string & name, const BT::NodeConfig & conf)
+IsFartherThan::IsFartherThan(const std::string & name, const BT::NodeConfig & conf)
 : BT::ConditionNode(name, conf)
 {
   auto node_any = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   if (!node_any) {
-    throw BT::RuntimeError("IsInRange: 'node' not found in blackboard");
+    throw BT::RuntimeError("IsFartherThan: 'node' not found in blackboard");
   }
   node_ = node_any;
 
@@ -21,11 +21,11 @@ IsInRange::IsInRange(const std::string & name, const BT::NodeConfig & conf)
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 }
 
-BT::NodeStatus IsInRange::tick()
+BT::NodeStatus IsFartherThan::tick()
 {
   std::string target_frame;
   if (!getInput("target_frame", target_frame)) {
-    RCLCPP_ERROR(node_->get_logger(), "IsInRange: missing required input 'target_frame'");
+    RCLCPP_ERROR(node_->get_logger(), "IsFartherThan: missing required input 'target_frame'");
     return bt_failure(
       config(), registrationName(),
       "missing required input 'target_frame'",
@@ -62,7 +62,11 @@ BT::NodeStatus IsInRange::tick()
     const double dy = transform.transform.translation.y;
     const double dz = transform.transform.translation.z;
     const double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
-    return distance <= distance_threshold ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+
+    if (distance > distance_threshold) {
+      return BT::NodeStatus::SUCCESS;
+    }
+    return bt_failure(config(), registrationName(), "NO_REAL_FAILURE");
   } catch (const tf2::TransformException & ex) {
     return bt_failure(
       config(), registrationName(),

@@ -66,7 +66,10 @@ BT::NodeStatus IsAligned::tick()
     setOutput("direction", direction);
 
     const bool aligned = std::fabs(bearing) <= angle_threshold;
-    return aligned ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+    if (aligned) {
+      return BT::NodeStatus::SUCCESS;
+    }
+    return bt_failure(config(), registrationName(), "NO_REAL_FAILURE");
   } catch (const tf2::TransformException & ex) {
     return bt_failure(
       config(), registrationName(),

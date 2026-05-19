@@ -53,22 +53,16 @@ BT::NodeStatus MoveTowards::onStart()
   }
 
   if (goal_distance_ < 0.0) {
-    return bt_failure(
-      config(), registrationName(),
-      "'goal_distance' must be non-negative",
-      "bt_config_error");
+    RCLCPP_ERROR(node_->get_logger(), "MoveTowards: 'goal_distance' must be non-negative");
+    goal_distance_ = 0.0;
   }
   if (max_linear_speed_ <= 0.0) {
-    return bt_failure(
-      config(), registrationName(),
-      "'max_linear_speed' must be greater than zero",
-      "bt_config_error");
+    RCLCPP_ERROR(node_->get_logger(), "MoveTowards: 'max_linear_speed' must be greater than zero");
+    max_linear_speed_ = 0.5;
   }
   if (max_angular_speed_ <= 0.0) {
-    return bt_failure(
-      config(), registrationName(),
-      "'max_angular_speed' must be greater than zero",
-      "bt_config_error");
+    RCLCPP_ERROR(node_->get_logger(), "MoveTowards: 'max_angular_speed' must be greater than zero");
+    max_angular_speed_ = 1.0;
   }
 
   cmd_vel_pub_ = node_->create_publisher<geometry_msgs::msg::Twist>(cmd_vel_topic_, 10);
@@ -139,13 +133,13 @@ BT::NodeStatus MoveTowards::onRunning()
       "Target at distance: %.2f m, angle: %.2f deg",
       distance, angle * 180.0 / M_PI);
 
-    // Check if target is within goal distance - return SUCCESS
+    // Keep action active even at goal distance; never return SUCCESS.
     if (distance <= goal_distance_) {
       RCLCPP_INFO(node_->get_logger(),
-        "Goal reached (distance: %.2f m <= goal: %.2f m)",
+        "Goal distance reached (distance: %.2f m <= goal: %.2f m), holding position",
         distance, goal_distance_);
       stop_robot();
-      return BT::NodeStatus::SUCCESS;
+      return BT::NodeStatus::RUNNING;
     }
 
     // Calculate velocities using PID control
@@ -189,10 +183,9 @@ BT::NodeStatus MoveTowards::onRunning()
     return BT::NodeStatus::RUNNING;
 
   } catch (const tf2::TransformException & ex) {
-    return bt_failure(
-      config(), registrationName(),
-      std::string("TF transform failed: ") + ex.what(),
-      "tf_error");
+    RCLCPP_WARN(node_->get_logger(), "MoveTowards: TF transform failed: %s", ex.what());
+    stop_robot();
+    return BT::NodeStatus::RUNNING;
   }
 }
 
