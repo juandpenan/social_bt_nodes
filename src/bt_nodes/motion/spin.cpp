@@ -49,13 +49,13 @@ BT::NodeStatus SpinSearch::onRunning()
   RCLCPP_DEBUG_THROTTLE(
     node_->get_logger(), *node_->get_clock(), 1000,
     "Searching for target...");
+    
+  RCLCPP_INFO(node_->get_logger(), "Spinning at %.2f rad/s", angular_speed_);
   
   auto twist_msg = geometry_msgs::msg::Twist();
   twist_msg.angular.z = angular_speed_;
 
-  RCLCPP_DEBUG_THROTTLE(
-    node_->get_logger(), *node_->get_clock(), 1000,
-    "Publishing spin command: %.2f rad/s", angular_speed_);
+  RCLCPP_INFO(node_->get_logger(), "Publishing spin command: %.2f rad/s", angular_speed_);
   
   cmd_vel_pub_->publish(twist_msg);
   
@@ -65,7 +65,13 @@ BT::NodeStatus SpinSearch::onRunning()
 void SpinSearch::onHalted()
 {
   RCLCPP_INFO(node_->get_logger(), "Search halted");
-  stop_robot();
+  
+  auto twist_msg = geometry_msgs::msg::Twist();
+  twist_msg.angular.z = angular_speed_;
+
+  cmd_vel_pub_->publish(twist_msg);
+
+  // stop_robot();
 }
 
 void SpinSearch::stop_robot()
