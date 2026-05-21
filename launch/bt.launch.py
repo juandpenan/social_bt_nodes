@@ -36,7 +36,7 @@ def generate_launch_description():
         default_value=PathJoinSubstitution([
             FindPackageShare('social_bt_nodes'),
             'config',
-            'spin_search.xml'
+            'test.xml'
         ]),
         description='Path to the behavior tree XML file'
     )
@@ -68,7 +68,11 @@ def generate_launch_description():
             'bt_loop_duration': LaunchConfiguration('bt_loop_duration'),
             'plugin_list': [plugin_lib],
             'use_sim_time': LaunchConfiguration('use_sim_time')
-        }]
+        }],
+        remappings=[
+            ('/cmd_vel', '/cmd_vel_muxed')
+        ],
+        arguments=['--ros-args', '--log-level', 'INFO']
     )
     
     return LaunchDescription([

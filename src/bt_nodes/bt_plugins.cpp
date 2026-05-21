@@ -18,16 +18,17 @@
 #include "social_bt_nodes/bt_nodes/perception/is_target_static.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/speak.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/speak_enum.hpp"
-#include "social_bt_nodes/bt_nodes/interaction/ask.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/ask_open_question.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/listen.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/extract.hpp"
-#include "social_bt_nodes/bt_nodes/interaction/yesno.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/ask_yes_no_question.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/nao/nao_position.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/nao/nao_set_leds.hpp"
 #include "social_bt_nodes/bt_nodes/support/is_available.hpp"
 #include "social_bt_nodes/bt_nodes/support/set_ros2_param.hpp"
 #include "social_bt_nodes/bt_nodes/support/is_true.hpp"
 #include "social_bt_nodes/bt_nodes/support/stop_current_task.hpp"
+#include "social_bt_nodes/bt_nodes/support/force_plan_fail.hpp"
 
 // Plugin registration with extern "C" linkage for dynamic loading
 BT_REGISTER_NODES(factory)
@@ -68,14 +69,14 @@ BT_REGISTER_NODES(factory)
   social_bt_nodes::bt_register_node_description("Speak", social_bt_nodes::Speak::node_description);
   factory.registerNodeType<social_bt_nodes::SpeakEnum>("SpeakEnum");
   social_bt_nodes::bt_register_node_description("SpeakEnum", social_bt_nodes::SpeakEnum::node_description);
-  factory.registerNodeType<social_bt_nodes::Ask>("Ask");
-  social_bt_nodes::bt_register_node_description("Ask", social_bt_nodes::Ask::node_description);
+  factory.registerNodeType<social_bt_nodes::AskOpenQuestion>("AskOpenQuestion");
+  social_bt_nodes::bt_register_node_description("AskOpenQuestion", social_bt_nodes::AskOpenQuestion::node_description);
   factory.registerNodeType<social_bt_nodes::Listen>("Listen");
   social_bt_nodes::bt_register_node_description("Listen", social_bt_nodes::Listen::node_description);
   factory.registerNodeType<social_bt_nodes::Extract>("Extract");
   social_bt_nodes::bt_register_node_description("Extract", social_bt_nodes::Extract::node_description);
-  factory.registerNodeType<social_bt_nodes::YesNo>("YesNo");
-  social_bt_nodes::bt_register_node_description("YesNo", social_bt_nodes::YesNo::node_description);
+  factory.registerNodeType<social_bt_nodes::AskYesNoQuestion>("AskYesNoQuestion");
+  social_bt_nodes::bt_register_node_description("AskYesNoQuestion", social_bt_nodes::AskYesNoQuestion::node_description);
   factory.registerNodeType<social_bt_nodes::IsAvailable>("IsAvailable");
   social_bt_nodes::bt_register_node_description("IsAvailable", social_bt_nodes::IsAvailable::node_description);
   factory.registerNodeType<social_bt_nodes::IsTrue>("IsTrue");
@@ -88,4 +89,6 @@ BT_REGISTER_NODES(factory)
   social_bt_nodes::bt_register_node_description("SetRos2Param", social_bt_nodes::SetRos2Param::node_description);
   factory.registerNodeType<social_bt_nodes::StopCurrentTask>("StopCurrentTask");
   social_bt_nodes::bt_register_node_description("StopCurrentTask", social_bt_nodes::StopCurrentTask::node_description);
+  factory.registerNodeType<social_bt_nodes::ForcePlanFail>("ForcePlanFail");
+  social_bt_nodes::bt_register_node_description("ForcePlanFail", social_bt_nodes::ForcePlanFail::node_description);
 }

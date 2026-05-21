@@ -13,7 +13,7 @@
                     transcribed_text="{ready_response}"
                     service_name="/stt_service"
                     timeout="10000"/>
-            <YesNo name="CheckReady"
+            <AskYesNoQuestion name="CheckReady"
                           text="{ready_response}"
 
                           service_name="/yesno_service"
@@ -81,7 +81,7 @@
 
   <!-- Description of Node Models (used by Groot) -->
   <TreeNodesModel>
-    <Action ID="YesNo"
+    <Action ID="AskYesNoQuestion"
             editable="true">
       <input_port name="text"/>
       <input_port name="service_name"/>

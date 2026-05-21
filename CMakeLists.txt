@@ -71,16 +71,17 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/motion/rotate_to_bearing.cpp
   src/bt_nodes/interaction/speak.cpp
   src/bt_nodes/interaction/speak_enum.cpp
-  src/bt_nodes/interaction/ask.cpp
+  src/bt_nodes/interaction/ask_open_question.cpp
   src/bt_nodes/interaction/listen.cpp
   src/bt_nodes/interaction/extract.cpp
-  src/bt_nodes/interaction/yesno.cpp
+  src/bt_nodes/interaction/ask_yes_no_question.cpp
   src/bt_nodes/interaction/nao/nao_position.cpp
   src/bt_nodes/interaction/nao/nao_set_leds.cpp
   src/bt_nodes/support/is_available.cpp
   src/bt_nodes/support/set_ros2_param.cpp
   src/bt_nodes/support/is_true.cpp
   src/bt_nodes/support/stop_current_task.cpp
+  src/bt_nodes/support/force_plan_fail.cpp
   src/bt_nodes/bt_plugins.cpp
 )
 

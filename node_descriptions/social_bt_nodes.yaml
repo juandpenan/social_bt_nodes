@@ -11,14 +11,14 @@ bt_nodes:
       SUCCESS: "Speaks the text provided."
       FAILURE: "The required 'text' input port is missing."
 
-  - name: "YesNo"
+  - name: "AskYesNoQuestion"
     type: "Action"
-    description: "Asks the user a yes/no question and returns the answer as a success or failure status. Returns SUCCESS if the user confirms (YES), FAILURE if the user declines (NO). Also writes the boolean result to the 'confirmed' output port so downstream nodes can use it directly."
+    description: "Asks the user a yes/no question and returns the answer as a success or failure status. Returns SUCCESS if the user confirms (YES), FAILURE if the user declines (NO). Also writes the boolean result to the 'confirmed' output port so downstream nodes can use it directly. There is no need to speak before this node, as the 'question' input can include the full prompt to be shown or spoken to the user."
     ports:
-      - name: "text"
+      - name: "question"
         direction: "Input"
         type: "string"
-        description: "Confirmation prompt to show or ask the user (required). Can be a hardcoded literal (e.g. <YesNo text=\"Is that correct?\"/>) or a blackboard reference written by a previous node. The value must be set at runtime — never use a blackboard reference that has not been written yet."
+        description: "Confirmation prompt to show or ask the user (required). Can be a hardcoded literal (e.g. <AskYesNoQuestion question=\"Is that correct?\"/>) or a blackboard reference written by a previous node. The value must be set at runtime — never use a blackboard reference that has not been written yet."
       - name: "confirmed"
         direction: "Output"
         type: "bool"
@@ -33,16 +33,16 @@ bt_nodes:
         description: "Service call timeout in milliseconds (optional, default: 10000)."
     return:
       SUCCESS: "User confirmed (YES). Writes true to the 'confirmed' output port."
-      FAILURE: "User declined (NO), or the required 'text' input port is missing/service unavailable. Writes false to the 'confirmed' output port when available."
+      FAILURE: "User declined (NO), or the required 'question' input port is missing/service unavailable. Writes false to the 'confirmed' output port when available."
 
-  - name: "Ask"
+  - name: "AskOpenQuestion"
     type: "Action"
     description: "Asks the user an open-ended question and captures the answer in one node. Use this when the robot needs a new free-form response from the user."
     ports:
       - name: "question"
         direction: "Input"
         type: "string"
-        description: "Question to ask the user (required). Can be a hardcoded literal (e.g. <Ask question=\"What would you like instead?\"/>) or a blackboard reference written by a previous node. The value must be set at runtime — never use a blackboard reference that has not been written yet."
+        description: "Question to ask the user (required). Can be a hardcoded literal (e.g. <AskOpenQuestion question=\"What would you like instead?\"/>) or a blackboard reference written by a previous node. The value must be set at runtime — never use a blackboard reference that has not been written yet."
       - name: "answer"
         direction: "Output"
         type: "string"
@@ -469,3 +469,15 @@ bt_nodes:
       SUCCESS: "Only if succeed_on_reach input is true and the target is within minimum distance."
       RUNNING: "Actively following the target."
       FAILURE: "The target frame is lost or cannot be found via TF."
+
+  - name: "ForcePlanFail"
+    type: "Condition"
+    description: "Always returns FAILURE and writes FORCED_FAILURE to bt_last_failure_code. Use this node when the current sub-goal is definitively unachievable under the current plan and the mission must restart from step 0 (e.g. after N failed appointment-validation attempts). The orchestrator will restart plan execution from the beginning, reusing already-generated BTs and without consuming a replan slot."
+    ports:
+      - name: "fail_message"
+        direction: "Input"
+        type: "string"
+        description: "Human-readable reason for the forced plan restart (required)."
+    return:
+      FAILURE: "Always. Writes FORCED_FAILURE to bt_last_failure_code and the message (if provided) to bt_last_failure."
+
