@@ -139,7 +139,7 @@ BT::NodeStatus MoveTowards::onRunning()
         "Goal distance reached (distance: %.2f m <= goal: %.2f m), holding position",
         distance, goal_distance_);
       stop_robot();
-      return BT::NodeStatus::RUNNING;
+      return BT::NodeStatus::SUCCESS;
     }
 
     // Calculate velocities using PID control
@@ -185,7 +185,7 @@ BT::NodeStatus MoveTowards::onRunning()
   } catch (const tf2::TransformException & ex) {
     RCLCPP_WARN(node_->get_logger(), "MoveTowards: TF transform failed: %s", ex.what());
     stop_robot();
-    return BT::NodeStatus::RUNNING;
+    return BT::NodeStatus::FAILURE;
   }
 }
 
