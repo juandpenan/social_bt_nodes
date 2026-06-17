@@ -46,6 +46,22 @@ def generate_launch_description():
         default_value='20',
         description='Behavior tree loop duration in milliseconds'
     )
+
+    feed_bb_arg = DeclareLaunchArgument(
+        'feed_bb',
+        default_value='true',
+        description='If true, preload blackboard entries from a YAML file before creating the tree'
+    )
+
+    bb_feed_yaml_arg = DeclareLaunchArgument(
+        'bb_feed_yaml',
+        default_value=PathJoinSubstitution([
+            FindPackageShare('social_bt_nodes'),
+            'config',
+            'blackboard_feed.yaml'
+        ]),
+        description='Path to blackboard feed YAML (explicit type/value format)'
+    )
     
     # Path to the plugin library
     plugin_lib = os.path.join(
@@ -67,6 +83,8 @@ def generate_launch_description():
             'bt_xml': LaunchConfiguration('bt_xml'),
             'bt_loop_duration': LaunchConfiguration('bt_loop_duration'),
             'plugin_list': [plugin_lib],
+            'feed_bb': LaunchConfiguration('feed_bb'),
+            'bb_feed_yaml': LaunchConfiguration('bb_feed_yaml'),
             'use_sim_time': LaunchConfiguration('use_sim_time')
         }],
         remappings=[
@@ -78,6 +96,8 @@ def generate_launch_description():
     return LaunchDescription([
         bt_xml_arg,
         bt_loop_duration_arg,
+        feed_bb_arg,
+        bb_feed_yaml_arg,
         use_sim_time_arg,
         bt_node
     ])

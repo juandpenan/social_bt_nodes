@@ -94,6 +94,12 @@ target_compile_definitions(social_bt_nodes_plugin PRIVATE BT_PLUGIN_EXPORT)
 # Main executable
 add_executable(social_bt_nodes_main src/main.cpp)
 ament_target_dependencies(social_bt_nodes_main ${dependencies})
+target_link_libraries(social_bt_nodes_main yaml-cpp)
+
+# Utility executable: load key/value YAML into BT blackboard for testing
+add_executable(bt_blackboard_from_yaml src/bt_blackboard_from_yaml.cpp)
+ament_target_dependencies(bt_blackboard_from_yaml behaviortree_cpp)
+target_link_libraries(bt_blackboard_from_yaml yaml-cpp)
 
 # Install
 install(TARGETS
@@ -105,6 +111,11 @@ install(TARGETS
 
 install(TARGETS
   social_bt_nodes_main
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS
+  bt_blackboard_from_yaml
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -1,0 +1,33 @@
+main_dish:
+  type: string
+  value: steak
+
+drink:
+  type: string
+  value: coke
+
+dessert:
+  type: string
+  value: cake
+
+detected_customer:
+  type: string
+  value: customer_1
+
+attempts:
+  type: int64
+  value: 2
+
+confidence:
+  type: double
+  value: 0.87
+
+needs_confirmation:
+  type: bool
+  value: true
+
+list_example:
+  type: yaml
+  value:
+    - apple
+    - banana
