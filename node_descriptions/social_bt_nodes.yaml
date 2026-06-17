@@ -395,7 +395,9 @@ bt_nodes:
         type: "double"
         description: "Derivative gain of the angular PID controller (optional, default: 0.3)."
     return:
-      RUNNING: "The robot is still approaching, orienting, or holding position near the target frame. The node never returns SUCCESS or FAILURE by itself."
+      RUNNING: "The robot is still approaching, orienting, or holding position near the target frame."
+      SUCCESS: "A velocity command toward the target has been published."
+      FAILURE: "Look up transformation from frame failed."
 
   - name: "RotateToBearing"
     type: "Action"
