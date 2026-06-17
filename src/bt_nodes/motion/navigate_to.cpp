@@ -74,7 +74,7 @@ BT::NodeStatus NavigateTo::onStart()
   std::string target_frame;
   
   // Check if using TF frame or coordinates
-  if (getInput("target_frame", target_frame) && !target_frame.empty()) {
+  if (getInput("target", target_frame) && !target_frame.empty()) {
     // Navigate to TF frame
     RCLCPP_INFO(node_->get_logger(), "NavigateTo: Navigating to target frame '%s'", target_frame.c_str());
     std::string frame_id;

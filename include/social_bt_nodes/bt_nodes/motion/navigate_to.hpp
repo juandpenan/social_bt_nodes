@@ -42,7 +42,7 @@ public:
       BT::InputPort<double>("x", "X coordinate in meters (map frame)"),
       BT::InputPort<double>("y", "Y coordinate in meters (map frame)"),
       BT::InputPort<double>("yaw", 0.0, "Yaw orientation in radians (map frame)"),
-      BT::InputPort<std::string>("target_frame", "Target TF frame to navigate to (alternative to x,y,yaw)"),
+      BT::InputPort<std::string>("target", "Target TF frame to navigate to (alternative to x,y,yaw)"),
       BT::InputPort<std::string>("frame_id", "map", "Frame ID for the goal pose"),
       BT::InputPort<std::string>("action_name", "navigate_to_pose", "Nav2 action server name"),
       BT::InputPort<double>("timeout", 300.0, "Timeout for navigation in seconds"),

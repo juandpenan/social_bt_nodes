@@ -133,14 +133,16 @@ BT::NodeStatus MoveTowards::onRunning()
       "Target at distance: %.2f m, angle: %.2f deg",
       distance, angle * 180.0 / M_PI);
 
-    // Keep action active even at goal distance; never return SUCCESS.
+    // Keep action active even at goal distance
     if (distance <= goal_distance_) {
       RCLCPP_INFO(node_->get_logger(),
         "Goal distance reached (distance: %.2f m <= goal: %.2f m), holding position",
         distance, goal_distance_);
       stop_robot();
-      return BT::NodeStatus::RUNNING;
+      return BT::NodeStatus::SUCCESS;
     }
+
+    return BT::NodeStatus::RUNNING;
 
     // Calculate velocities using PID control
     rclcpp::Time current_time = node_->now();
