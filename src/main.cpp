@@ -2,6 +2,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -13,6 +14,9 @@
 
 namespace
 {
+
+constexpr int EXIT_SETUP_ERROR = 1;
+constexpr int EXIT_BT_FAILURE = 2;
 
 std::string to_lower_copy(std::string value)
 {
@@ -155,7 +159,7 @@ int main(int argc, char** argv)
   
   if (bt_xml.empty()) {
     RCLCPP_ERROR(node->get_logger(), "bt_xml parameter is required");
-    return 1;
+    return EXIT_SETUP_ERROR;
   }
   
   RCLCPP_INFO(node->get_logger(), "Loading behavior tree from: %s", bt_xml.c_str());
@@ -171,10 +175,10 @@ int main(int argc, char** argv)
   if (feed_bb) {
     if (bb_feed_yaml.empty()) {
       RCLCPP_ERROR(node->get_logger(), "feed_bb=true but bb_feed_yaml is empty");
-      return 1;
+      return EXIT_SETUP_ERROR;
     }
     if (!load_blackboard_from_yaml(node->get_logger(), blackboard, bb_feed_yaml)) {
-      return 1;
+      return EXIT_SETUP_ERROR;
     }
     blackboard->debugMessage();
   }
@@ -187,7 +191,7 @@ int main(int argc, char** argv)
     } catch (const std::exception& e) {
       RCLCPP_ERROR(node->get_logger(), 
         "Failed to load plugin %s: %s", plugin.c_str(), e.what());
-      return 1;
+      return EXIT_SETUP_ERROR;
     }
   }
   
@@ -199,7 +203,7 @@ int main(int argc, char** argv)
   } catch (const std::exception& e) {
     RCLCPP_ERROR(node->get_logger(), 
       "Failed to create tree: %s", e.what());
-    return 1;
+    return EXIT_SETUP_ERROR;
   }
   
   // StdCout logger: prints node status transitions to stdout
@@ -220,6 +224,7 @@ int main(int argc, char** argv)
     "Starting behavior tree execution (loop: %d ms)", bt_loop_duration);
   
   rclcpp::WallRate rate{std::chrono::milliseconds(bt_loop_duration)};
+  int exit_code = EXIT_SETUP_ERROR;
   
   while (rclcpp::ok()) {
     // Spin ROS callbacks
@@ -239,9 +244,13 @@ int main(int argc, char** argv)
     // Handle terminal states
     if (status == BT::NodeStatus::SUCCESS) {
       RCLCPP_INFO(node->get_logger(), "Behavior tree succeeded");
+      std::cout << "BT_FINAL_STATUS=SUCCESS" << std::endl;
+      exit_code = 0;
       break;
     } else if (status == BT::NodeStatus::FAILURE) {
       RCLCPP_WARN(node->get_logger(), "Behavior tree failed");
+      std::cout << "BT_FINAL_STATUS=FAILURE" << std::endl;
+      exit_code = EXIT_BT_FAILURE;
       break;
     }
     
@@ -251,5 +260,5 @@ int main(int argc, char** argv)
   RCLCPP_INFO(node->get_logger(), "Shutting down behavior tree");
   rclcpp::shutdown();
   
-  return 0;
+  return exit_code;
 }
