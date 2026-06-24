@@ -45,6 +45,12 @@ public:
       BT::InputPort<std::string>("target", "Target TF frame to navigate to (alternative to x,y,yaw)"),
       BT::InputPort<std::string>("frame_id", "map", "Frame ID for the goal pose"),
       BT::InputPort<std::string>("action_name", "navigate_to_pose", "Nav2 action server name"),
+      BT::InputPort<std::string>(
+        "behavior_tree", "",
+        "Nav2 behavior tree XML path. Empty uses the package default truncated-path BT."),
+      BT::InputPort<bool>(
+        "use_truncated_path", true,
+        "Use the package default Nav2 BT that stops before the requested goal."),
       BT::InputPort<double>("timeout", 300.0, "Timeout for navigation in seconds"),
       BT::OutputPort<std::string>("error_msg", "Error message if navigation fails")
     };
@@ -61,6 +67,7 @@ private:
     double x, double y, double yaw, const std::string & frame_id);
   geometry_msgs::msg::PoseStamped create_goal_pose_from_tf(
     const std::string & target_frame, const std::string & frame_id);
+  std::string resolve_behavior_tree();
 
   rclcpp::Node::SharedPtr node_;
   rclcpp_action::Client<NavigateToPose>::SharedPtr action_client_;

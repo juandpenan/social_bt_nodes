@@ -1,5 +1,6 @@
 #include "social_bt_nodes/bt_nodes/motion/navigate_to.hpp"
 #include "social_bt_nodes/bt_failure.hpp"
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
@@ -124,6 +125,18 @@ BT::NodeStatus NavigateTo::onStart()
   // Prepare and send goal
   auto goal_msg = NavigateToPose::Goal();
   goal_msg.pose = goal_pose;
+  goal_msg.behavior_tree = resolve_behavior_tree();
+
+  if (!goal_msg.behavior_tree.empty()) {
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "NavigateTo: Using Nav2 behavior tree '%s'",
+      goal_msg.behavior_tree.c_str());
+  } else {
+    RCLCPP_INFO(
+      node_->get_logger(),
+      "NavigateTo: Using Nav2 navigator default behavior tree");
+  }
 
   auto send_goal_options = rclcpp_action::Client<NavigateToPose>::SendGoalOptions();
   send_goal_options.goal_response_callback =
@@ -286,6 +299,32 @@ geometry_msgs::msg::PoseStamped NavigateTo::create_goal_pose_from_tf(
   goal_pose.pose.orientation = transform.transform.rotation;
 
   return goal_pose;
+}
+
+std::string NavigateTo::resolve_behavior_tree()
+{
+  std::string behavior_tree;
+  if (getInput("behavior_tree", behavior_tree) && !behavior_tree.empty()) {
+    return behavior_tree;
+  }
+
+  bool use_truncated_path = true;
+  getInput("use_truncated_path", use_truncated_path);
+  if (!use_truncated_path) {
+    return "";
+  }
+
+  try {
+    return ament_index_cpp::get_package_share_directory("social_bt_nodes") +
+           "/config/navigate_to_pose_truncated.xml";
+  } catch (const std::exception & e) {
+    RCLCPP_WARN(
+      node_->get_logger(),
+      "NavigateTo: Could not resolve default truncated Nav2 BT: %s. "
+      "Falling back to Nav2 default BT.",
+      e.what());
+    return "";
+  }
 }
 
 }  // namespace social_bt_nodes
