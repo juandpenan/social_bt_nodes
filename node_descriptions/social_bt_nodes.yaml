@@ -99,6 +99,10 @@ bt_nodes:
         direction: "Input"
         type: "string"
         description: "Target class name to activate in the perception system (required). Must be a standard YOLO class label; do not use custom entity names like customer_1 or waiter_john."
+      - name: "frame_id"
+        direction: "Output"
+        type: "string"
+        description: "The TF frame ID corresponding to the activated target class."
     return:
       SUCCESS: "Configures the perception system for the target class."
       FAILURE: "The required 'target' input port is missing."
@@ -395,7 +399,7 @@ bt_nodes:
         type: "double"
         description: "Derivative gain of the angular PID controller (optional, default: 0.3)."
     return:
-      RUNNING: "The robot is still approaching, orienting, or holding position near the target frame. The node never returns SUCCESS or FAILURE by itself."
+      RUNNING: "The robot is still approaching, orienting, or holding position near the target frame."
       SUCCESS: "The robot is within goal_distance of the target frame and is holding position."
       FAILURE: "The target frame is unavailable, the transform is stale, or required inputs are invalid."
 

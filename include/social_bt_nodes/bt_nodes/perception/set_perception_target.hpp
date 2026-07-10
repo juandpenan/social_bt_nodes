@@ -52,6 +52,8 @@ public:
     return {
       BT::InputPort<std::string>("service_name", "/set_perception_target",
         "Name of the perception target service"),
+      BT::InputPort<std::string>("target_frame", "target",
+        "Target frame for TF broadcast"),
       BT::InputPort<std::string>("target", "Target class to track"),
       BT::OutputPort<std::string>("frame_id", "TF frame associated with the selected target")
     };
@@ -66,6 +68,7 @@ private:
   
   std::string service_name_;
   std::string target_class_;
+  std::string target_frame_;
   std::string last_applied_target_class_;
   std::string last_service_name_;
   bool has_applied_target_;
