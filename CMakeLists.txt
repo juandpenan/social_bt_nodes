@@ -70,6 +70,7 @@ add_library(social_bt_nodes_plugin SHARED
   src/bt_nodes/motion/move_towards.cpp
   src/bt_nodes/motion/rotate_to_bearing.cpp
   src/bt_nodes/interaction/speak.cpp
+  src/bt_nodes/interaction/speak_reactive.cpp
   src/bt_nodes/interaction/speak_enum.cpp
   src/bt_nodes/interaction/ask_open_question.cpp
   src/bt_nodes/interaction/listen.cpp
