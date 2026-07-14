@@ -31,6 +31,12 @@ BT::NodeStatus SetPerceptionTarget::onStart()
       "SetPerceptionTarget: missing required input 'target'");
     return bt_failure(config(), registrationName(), "missing required input 'target'", "bt_config_error");
   }
+
+  if (!getInput("target_frame", target_frame_)) {
+    RCLCPP_ERROR(node_->get_logger(), 
+      "SetPerceptionTarget: missing required input 'target_frame'");
+    return bt_failure(config(), registrationName(), "missing required input 'target_frame'", "bt_config_error");
+  }
   
   RCLCPP_INFO(node_->get_logger(), 
     "SetPerceptionTarget: Attempting to connect to service '%s'", service_name_.c_str());

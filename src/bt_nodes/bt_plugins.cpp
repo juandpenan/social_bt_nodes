@@ -17,6 +17,7 @@
 #include "social_bt_nodes/bt_nodes/perception/is_farther_than.hpp"
 #include "social_bt_nodes/bt_nodes/perception/is_target_static.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/speak.hpp"
+#include "social_bt_nodes/bt_nodes/interaction/speak_reactive.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/speak_enum.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/ask_open_question.hpp"
 #include "social_bt_nodes/bt_nodes/interaction/listen.hpp"
@@ -67,6 +68,8 @@ BT_REGISTER_NODES(factory)
   social_bt_nodes::bt_register_node_description("IsTargetStatic", social_bt_nodes::IsTargetStatic::node_description);
   factory.registerNodeType<social_bt_nodes::Speak>("Speak");
   social_bt_nodes::bt_register_node_description("Speak", social_bt_nodes::Speak::node_description);
+  factory.registerNodeType<social_bt_nodes::SpeakReactive>("SpeakReactive");
+  social_bt_nodes::bt_register_node_description("SpeakReactive", social_bt_nodes::SpeakReactive::node_description);
   factory.registerNodeType<social_bt_nodes::SpeakEnum>("SpeakEnum");
   social_bt_nodes::bt_register_node_description("SpeakEnum", social_bt_nodes::SpeakEnum::node_description);
   factory.registerNodeType<social_bt_nodes::AskOpenQuestion>("AskOpenQuestion");
