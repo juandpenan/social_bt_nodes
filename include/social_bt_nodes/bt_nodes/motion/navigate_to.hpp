@@ -1,6 +1,7 @@
 #ifndef SOCIAL_BT_NODES__BT_NODES__MOTION__NAVIGATE_TO_HPP_
 #define SOCIAL_BT_NODES__BT_NODES__MOTION__NAVIGATE_TO_HPP_
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -44,6 +45,13 @@ public:
       BT::InputPort<double>("yaw", 0.0, "Yaw orientation in radians (map frame)"),
       BT::InputPort<std::string>("target", "Target TF frame to navigate to (alternative to x,y,yaw)"),
       BT::InputPort<std::string>("frame_id", "map", "Frame ID for the goal pose"),
+      BT::InputPort<bool>(
+        "resolve_target_frame", false,
+        "If true, resolve target TF into frame_id before sending the goal. "
+        "If false, send a zero pose in the target frame and let Nav2 transform it."),
+      BT::InputPort<double>(
+        "tf_timeout", 1.0,
+        "Timeout in seconds used only when resolve_target_frame is true."),
       BT::InputPort<std::string>("action_name", "navigate_to_pose", "Nav2 action server name"),
       BT::InputPort<std::string>(
         "behavior_tree", "",
@@ -65,8 +73,10 @@ private:
 
   geometry_msgs::msg::PoseStamped create_goal_pose_from_coordinates(
     double x, double y, double yaw, const std::string & frame_id);
+  geometry_msgs::msg::PoseStamped create_goal_pose_from_target_frame(
+    const std::string & target_frame);
   geometry_msgs::msg::PoseStamped create_goal_pose_from_tf(
-    const std::string & target_frame, const std::string & frame_id);
+    const std::string & target_frame, const std::string & frame_id, double timeout);
   std::string resolve_behavior_tree();
 
   rclcpp::Node::SharedPtr node_;
@@ -75,7 +85,7 @@ private:
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
   GoalHandleNavigateToPose::SharedPtr goal_handle_;
-  rclcpp::Time start_time_;
+  std::chrono::steady_clock::time_point start_steady_time_;
   double timeout_;
   std::string error_msg_;
   bool goal_accepted_;
